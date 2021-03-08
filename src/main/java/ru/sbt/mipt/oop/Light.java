@@ -3,9 +3,11 @@ package ru.sbt.mipt.oop;
 public class Light {
     private boolean isOn;
     private final String id;
+     private final Room room;
 
-    public Light(String id, boolean isOn) {
+    public Light(String id, Room room, boolean isOn) {
         this.id = id;
+        this.room = room;
         this.isOn = isOn;
     }
 
@@ -15,6 +17,10 @@ public class Light {
 
     public String getId() {
         return id;
+    }
+
+    public Room getRoom() {
+        return room;
     }
 
     public void setOn(boolean on) {
