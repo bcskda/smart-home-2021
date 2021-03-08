@@ -42,7 +42,6 @@ public class GlobalDoorClosedEventHandler implements SensorEventHandler {
         if (room.getName().equals("hall")) {
             for (Room homeRoom : controller.getHome().getRooms()) {
                 for (Light light : homeRoom.getLights()) {
-                    light.setOn(false);
                     SensorCommand command = new SensorCommand(CommandType.LIGHT_OFF, light.getId());
                     controller.sendCommand(command);
                 }

@@ -1,6 +1,9 @@
 package ru.sbt.mipt.oop;
 
+import ru.sbt.mipt.oop.commands.CommandType;
+import ru.sbt.mipt.oop.commands.handlers.LightOffCommandHandler;
 import ru.sbt.mipt.oop.commands.handlers.LogCommandHandler;
+import ru.sbt.mipt.oop.commands.handlers.SensorCommandHandler;
 import ru.sbt.mipt.oop.events.*;
 import ru.sbt.mipt.oop.events.handlers.*;
 import ru.sbt.mipt.oop.events.sources.SensorEventSource;
@@ -39,9 +42,9 @@ public class Application {
                 Paths.get(filename), StandardOpenOption.READ);
         SmartHome smartHome = new JsonConfigurationReader().readSmartHome(smartHomeStream);
 
-        // контроллер с заглушкой обработчика команд
-        smartHomeController = new SmartHomeControllerImpl(
-                smartHome, new HashMap<>(), new LogCommandHandler());
+        // обработчики команд и контроллер
+        Map<CommandType, SensorCommandHandler> commandHandlers = initCommandHandlers(smartHome);
+        smartHomeController = new SmartHomeControllerImpl(smartHome, commandHandlers, new LogCommandHandler());
 
         // создаём обработчики событий
         SensorEventSource eventSource = new SensorEventSourceStub();
@@ -51,6 +54,18 @@ public class Application {
 
     public void run() {
         eventLoop.runCatchSuppress();
+    }
+
+    private Map<CommandType, SensorCommandHandler> initCommandHandlers(SmartHome smartHome) {
+        Map<CommandType, SensorCommandHandler> handlers = new HashMap<>();
+        Map<String, Light> lightsById = new HashMap<>();
+        for (Room room : smartHome.getRooms()) {
+            for (Light light : room.getLights()) {
+                lightsById.put(light.getId(), light);
+            }
+        }
+        handlers.put(CommandType.LIGHT_OFF, new LightOffCommandHandler(lightsById));
+        return handlers;
     }
 
     private Map<SensorEventType, SensorEventHandler> initEventHandlers() {

@@ -13,6 +13,10 @@ public class SensorCommand {
         return type;
     }
 
+    public String getObjectId() {
+        return objectId;
+    }
+
     @Override
     public String toString() {
         return "SensorCommand{" +
