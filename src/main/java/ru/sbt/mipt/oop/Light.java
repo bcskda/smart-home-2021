@@ -1,9 +1,13 @@
 package ru.sbt.mipt.oop;
 
+import com.google.gson.annotations.Expose;
+
 public class Light {
+    @Expose
     private boolean isOn;
+    private final Room room;
+    @Expose
     private final String id;
-     private final Room room;
 
     public Light(String id, Room room, boolean isOn) {
         this.id = id;

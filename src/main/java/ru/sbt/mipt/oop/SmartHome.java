@@ -1,9 +1,12 @@
 package ru.sbt.mipt.oop;
 
+import com.google.gson.annotations.Expose;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
 public class SmartHome {
+    @Expose
     Collection<Room> rooms;
 
     public SmartHome() {

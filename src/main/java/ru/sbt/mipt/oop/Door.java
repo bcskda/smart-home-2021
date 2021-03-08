@@ -1,8 +1,12 @@
 package ru.sbt.mipt.oop;
 
+import com.google.gson.annotations.Expose;
+
 public class Door {
+    @Expose
     private final String id;
     private final Room room;
+    @Expose
     private boolean isOpen;
 
     public Door(String id, Room room, boolean isOpen) {
