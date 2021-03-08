@@ -1,8 +1,12 @@
-package ru.sbt.mipt.oop;
+package ru.sbt.mipt.oop.events.handlers;
+
+import ru.sbt.mipt.oop.Door;
+import ru.sbt.mipt.oop.Room;
+import ru.sbt.mipt.oop.events.SensorEvent;
 
 import java.util.Map;
 
-import static ru.sbt.mipt.oop.SensorEventType.DOOR_OPEN;
+import static ru.sbt.mipt.oop.events.SensorEventType.DOOR_OPEN;
 
 public class GlobalDoorOpenEventHandler implements SensorEventHandler {
     Map<String, Door> doorsById;

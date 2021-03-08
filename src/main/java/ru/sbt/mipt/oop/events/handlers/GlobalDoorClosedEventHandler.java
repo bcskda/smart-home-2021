@@ -1,8 +1,14 @@
-package ru.sbt.mipt.oop;
+package ru.sbt.mipt.oop.events.handlers;
+
+import ru.sbt.mipt.oop.*;
+import ru.sbt.mipt.oop.commands.CommandType;
+import ru.sbt.mipt.oop.commands.SensorCommand;
+import ru.sbt.mipt.oop.SmartHomeController;
+import ru.sbt.mipt.oop.events.SensorEvent;
 
 import java.util.Map;
 
-import static ru.sbt.mipt.oop.SensorEventType.DOOR_OPEN;
+import static ru.sbt.mipt.oop.events.SensorEventType.DOOR_OPEN;
 
 public class GlobalDoorClosedEventHandler implements SensorEventHandler {
     SmartHomeController controller;

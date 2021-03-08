@@ -1,8 +1,12 @@
-package ru.sbt.mipt.oop;
+package ru.sbt.mipt.oop.events.handlers;
+
+import ru.sbt.mipt.oop.Light;
+import ru.sbt.mipt.oop.Room;
+import ru.sbt.mipt.oop.events.SensorEvent;
 
 import java.util.Map;
 
-import static ru.sbt.mipt.oop.SensorEventType.LIGHT_OFF;
+import static ru.sbt.mipt.oop.events.SensorEventType.LIGHT_OFF;
 
 public class GlobalLightOffEventHandler implements SensorEventHandler {
     Map<String, Light> lightsById;
