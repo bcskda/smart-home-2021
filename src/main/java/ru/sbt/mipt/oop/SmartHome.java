@@ -17,6 +17,7 @@ public class SmartHome {
         this.rooms = rooms;
     }
 
+    // Update handlers after adding rooms
     public void addRoom(Room room) {
         rooms.add(room);
     }

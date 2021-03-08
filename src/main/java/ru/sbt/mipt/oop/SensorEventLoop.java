@@ -33,6 +33,18 @@ public class SensorEventLoop {
         }
     }
 
+    void runCatchSuppress() throws IllegalArgumentException {
+        // начинаем цикл обработки событий
+        boolean hasEvents = true;
+        while (hasEvents) {
+            try {
+                hasEvents = runOnce();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     /**
      * @throws IllegalArgumentException - if handler missing, or forwarded from handler
      */
