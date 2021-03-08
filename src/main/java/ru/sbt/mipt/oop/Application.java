@@ -1,11 +1,10 @@
 package ru.sbt.mipt.oop;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,10 +21,9 @@ public class Application {
 
     Application(String... args) throws IOException {
         // считываем состояние дома из файла
-        Gson gson = new GsonBuilder().create();
-        String json = new String(Files.readAllBytes(Paths.get("smart-home-1.json")));
-        SmartHome smartHome = gson.fromJson(json, SmartHome.class);
-        // TODO fill parent references
+        InputStream smartHomeStream = Files.newInputStream(
+                Paths.get("smart-home-1.json"), StandardOpenOption.READ);
+        SmartHome smartHome = new JsonConfigurationReader().readSmartHome(smartHomeStream);
         smartHomeController = new SmartHomeControllerStub(smartHome);
 
         // создаём обработчики событий
