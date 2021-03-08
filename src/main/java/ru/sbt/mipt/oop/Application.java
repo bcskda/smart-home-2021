@@ -1,5 +1,11 @@
 package ru.sbt.mipt.oop;
 
+import ru.sbt.mipt.oop.commands.handlers.LogCommandHandler;
+import ru.sbt.mipt.oop.events.*;
+import ru.sbt.mipt.oop.events.handlers.*;
+import ru.sbt.mipt.oop.events.sources.SensorEventSource;
+import ru.sbt.mipt.oop.events.sources.SensorEventSourceStub;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -8,7 +14,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.Map;
 
-import static ru.sbt.mipt.oop.SensorEventType.*;
+import static ru.sbt.mipt.oop.events.SensorEventType.*;
 
 public class Application {
     public static String DEFAULT_CONF_PATH = "smart-home-1.json";
@@ -33,8 +39,9 @@ public class Application {
                 Paths.get(filename), StandardOpenOption.READ);
         SmartHome smartHome = new JsonConfigurationReader().readSmartHome(smartHomeStream);
 
-        // заглушка контроллера - логгирует команды
-        smartHomeController = new SmartHomeControllerStub(smartHome);
+        // контроллер с заглушкой обработчика команд
+        smartHomeController = new SmartHomeControllerImpl(
+                smartHome, new HashMap<>(), new LogCommandHandler());
 
         // создаём обработчики событий
         SensorEventSource eventSource = new SensorEventSourceStub();
