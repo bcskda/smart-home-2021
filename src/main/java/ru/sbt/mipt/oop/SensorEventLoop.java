@@ -5,11 +5,18 @@ import java.util.Map;
 public class SensorEventLoop {
     SensorEventSource eventSource;
     Map<SensorEventType, SensorEventHandler> eventHandlers;
+    SensorEventHandler defaultHandler;
 
-    SensorEventLoop(SensorEventSource eventSource,
-                    Map<SensorEventType, SensorEventHandler> eventHandlers) {
+    public SensorEventLoop(SensorEventSource eventSource,
+                    Map<SensorEventType, SensorEventHandler> eventHandlers,
+                    SensorEventHandler defaultHandler) {
         this.eventSource = eventSource;
         this.eventHandlers = eventHandlers;
+        this.defaultHandler = defaultHandler;
+    }
+
+    public SensorEventLoop(SensorEventSource eventSource, Map<SensorEventType, SensorEventHandler> eventHandlers) {
+        this(eventSource, eventHandlers, null);
     }
 
     /**
@@ -31,7 +38,7 @@ public class SensorEventLoop {
      */
     private void handleEvent(SensorEvent event) throws IllegalArgumentException {
         System.out.println("Got event: " + event);
-        SensorEventHandler handler = eventHandlers.get(event.getType());
+        SensorEventHandler handler = eventHandlers.getOrDefault(event.getType(), defaultHandler);
         if (handler == null) {
             throw new IllegalArgumentException(
                     "Missing handler for SensorEventType " + event.getType().toString());

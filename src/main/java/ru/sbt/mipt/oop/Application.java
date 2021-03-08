@@ -22,7 +22,7 @@ public class Application {
 
     Application(String... args) throws IOException {
         // считываем состояние дома из файла
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        Gson gson = new GsonBuilder().create();
         String json = new String(Files.readAllBytes(Paths.get("smart-home-1.json")));
         SmartHome smartHome = gson.fromJson(json, SmartHome.class);
         // TODO fill parent references
@@ -31,7 +31,7 @@ public class Application {
         // создаём обработчики событий
         SensorEventSource eventSource = new SensorEventSourceStub();
         Map<SensorEventType, SensorEventHandler> eventHandlers = initEventHandlers();
-        eventLoop = new SensorEventLoop(eventSource, eventHandlers);
+        eventLoop = new SensorEventLoop(eventSource, eventHandlers, new LogEventHandler());
     }
 
     public void run() {
