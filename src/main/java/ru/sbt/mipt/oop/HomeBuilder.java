@@ -29,7 +29,7 @@ public class HomeBuilder {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String jsonString = gson.toJson(smartHome);
         System.out.println(jsonString);
-        Path path = Paths.get("output.js");
+        Path path = Paths.get("output.json");
         try (BufferedWriter writer = Files.newBufferedWriter(path)) {
             writer.write(jsonString);
         }
