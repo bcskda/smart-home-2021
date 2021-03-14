@@ -1,30 +1,31 @@
 package ru.sbt.mipt.oop.events.handlers;
 
-import ru.sbt.mipt.oop.Light;
-import ru.sbt.mipt.oop.Room;
-import ru.sbt.mipt.oop.SmartHomeController;
+import ru.sbt.mipt.oop.*;
 import ru.sbt.mipt.oop.commands.CommandType;
 import ru.sbt.mipt.oop.commands.SensorCommand;
 import ru.sbt.mipt.oop.events.SensorEvent;
-
-import java.util.Set;
 
 import static ru.sbt.mipt.oop.events.SensorEventType.DOOR_CLOSED;
 
 public class HallDoorClosedThenLightsOffHandler implements SensorEventHandler {
     SmartHomeController controller;
-    Set<String> hallDoorsIds;
+    SmartHome smartHome;
 
-    public HallDoorClosedThenLightsOffHandler(SmartHomeController controller, Set<String> hallDoorsIds) {
+    public HallDoorClosedThenLightsOffHandler(SmartHomeController controller, SmartHome smartHome) {
         this.controller = controller;
-        this.hallDoorsIds = hallDoorsIds;
+        this.smartHome = smartHome;
     }
 
     @Override
     public void handleEvent(SensorEvent event) {
         if (event.getType() != DOOR_CLOSED)
             return;
-        if (hallDoorsIds.contains(event.getObjectId()))
+        Door door = smartHome.getDoorById(event.getObjectId());
+        if (door == null) {
+            throw new IllegalArgumentException(
+                    "No door with id " + event.getObjectId());
+        }
+        if ("hall".equals(smartHome.getRoomByDoor(door).getName()))
             onHallDoorClose();
     }
 

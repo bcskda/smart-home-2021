@@ -3,22 +3,20 @@ package ru.sbt.mipt.oop.events.handlers;
 import ru.sbt.mipt.oop.*;
 import ru.sbt.mipt.oop.events.SensorEvent;
 
-import java.util.Map;
-
 import static ru.sbt.mipt.oop.events.SensorEventType.DOOR_CLOSED;
 
 public class DoorClosedEventHandler implements SensorEventHandler {
-    Map<String, Door> doorsById;
+    SmartHome smartHome;
 
-    public DoorClosedEventHandler(Map<String, Door> doorsById) {
-        this.doorsById = doorsById;
+    public DoorClosedEventHandler(SmartHome smartHome) {
+        this.smartHome = smartHome;
     }
 
     @Override
     public void handleEvent(SensorEvent event) {
         if (event.getType() != DOOR_CLOSED)
             return;
-        Door door = doorsById.get(event.getObjectId());
+        Door door = smartHome.getDoorById(event.getObjectId());
         if (door == null) {
             throw new IllegalArgumentException(
                     "No door with id " + event.getObjectId());

@@ -18,6 +18,7 @@ import java.util.*;
 public class Application {
     public static String DEFAULT_CONF_PATH = "smart-home-1.json";
 
+    private final SmartHome smartHome;
     private final SmartHomeController smartHomeController;
     private final SensorEventLoop eventLoop;
 
@@ -36,7 +37,7 @@ public class Application {
         String filename = (args.length > 0) ? args[0] : DEFAULT_CONF_PATH;
         InputStream smartHomeStream = Files.newInputStream(
                 Paths.get(filename), StandardOpenOption.READ);
-        SmartHome smartHome = new JsonConfigurationReader().readSmartHome(smartHomeStream);
+        smartHome = new JsonConfigurationReader().readSmartHome(smartHomeStream);
 
         // обработчики команд и контроллер
         Map<CommandType, SensorCommandHandler> commandHandlers = initCommandHandlers(smartHome);
@@ -73,33 +74,14 @@ public class Application {
     }
 
     private void initLightHandlers(List<SensorEventHandler> handlers) {
-        Map<String, Light> lightsById = new HashMap<>();
-        for (Room room : smartHomeController.getHome().getRooms()) {
-            for (Light light : room.getLights()) {
-                lightsById.put(light.getId(), light);
-            }
-        }
-        handlers.add(new LightOnEventHandler(lightsById));
-        handlers.add(new LightOffEventHandler(lightsById));
+        handlers.add(new LightOnEventHandler(smartHome));
+        handlers.add(new LightOffEventHandler(smartHome));
     }
 
     private void initDoorHandlers(List<SensorEventHandler> handlers) {
-        Map<String, Door> doorsById = new HashMap<>();
-        for (Room room : smartHomeController.getHome().getRooms()) {
-            for (Door door : room.getDoors()) {
-                doorsById.put(door.getId(), door);
-            }
-        }
-        handlers.add(new DoorOpenEventHandler(doorsById));
-        handlers.add(new DoorClosedEventHandler(doorsById));
-        Set<String> hallDoors = new HashSet<>();
-        for (Room room : smartHomeController.getHome().getRooms()) {
-            if ("hall".equals(room.getName())) {
-                room.getDoors().forEach(
-                        door -> hallDoors.add(door.getId()));
-            }
-        }
+        handlers.add(new DoorOpenEventHandler(smartHome));
+        handlers.add(new DoorClosedEventHandler(smartHome));
         handlers.add(new HallDoorClosedThenLightsOffHandler(
-                smartHomeController, hallDoors));
+                smartHomeController, smartHome));
     }
 }
