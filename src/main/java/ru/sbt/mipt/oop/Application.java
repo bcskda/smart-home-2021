@@ -63,20 +63,14 @@ public class Application {
     private List<SensorEventHandler> initEventHandlers() {
         List<SensorEventHandler> handlers = new ArrayList<>();
         handlers.add(new LogEventHandler());
-        initLightHandlers(handlers);
-        initDoorHandlers(handlers);
+
+        handlers.add(new LightOnEventHandler(smartHome));
+        handlers.add(new LightOffEventHandler(smartHome));
+
+        handlers.add(new DoorOpenEventHandler(smartHome));
+        handlers.add(new DoorClosedEventHandler(smartHome));
+        handlers.add(new HallDoorClosedThenLightsOffHandler(smartHomeController, smartHome));
         return handlers;
     }
 
-    private void initLightHandlers(List<SensorEventHandler> handlers) {
-        handlers.add(new LightOnEventHandler(smartHome));
-        handlers.add(new LightOffEventHandler(smartHome));
-    }
-
-    private void initDoorHandlers(List<SensorEventHandler> handlers) {
-        handlers.add(new DoorOpenEventHandler(smartHome));
-        handlers.add(new DoorClosedEventHandler(smartHome));
-        handlers.add(new HallDoorClosedThenLightsOffHandler(
-                smartHomeController, smartHome));
-    }
 }
