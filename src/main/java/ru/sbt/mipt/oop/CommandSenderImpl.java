@@ -5,13 +5,10 @@ import ru.sbt.mipt.oop.commands.handlers.SensorCommandHandler;
 
 import java.util.List;
 
-public class SmartHomeControllerImpl implements SmartHomeController {
-    private final SmartHome smartHome;
+public class CommandSenderImpl implements CommandSender {
     private final List<SensorCommandHandler> commandHandlers;
 
-    public SmartHomeControllerImpl(SmartHome smartHome,
-                                   List<SensorCommandHandler> commandHandlers) {
-        this.smartHome = smartHome;
+    public CommandSenderImpl(List<SensorCommandHandler> commandHandlers) {
         this.commandHandlers = commandHandlers;
     }
 
@@ -24,10 +21,5 @@ public class SmartHomeControllerImpl implements SmartHomeController {
                 e.printStackTrace();
             }
         }
-    }
-
-    @Override
-    public SmartHome getHome() {
-        return smartHome;
     }
 }

@@ -8,10 +8,10 @@ import ru.sbt.mipt.oop.events.SensorEvent;
 import static ru.sbt.mipt.oop.events.SensorEventType.DOOR_CLOSED;
 
 public class HallDoorClosedThenLightsOffHandler implements SensorEventHandler {
-    SmartHomeController controller;
+    CommandSender controller;
     SmartHome smartHome;
 
-    public HallDoorClosedThenLightsOffHandler(SmartHomeController controller, SmartHome smartHome) {
+    public HallDoorClosedThenLightsOffHandler(CommandSender controller, SmartHome smartHome) {
         this.controller = controller;
         this.smartHome = smartHome;
     }
@@ -30,7 +30,7 @@ public class HallDoorClosedThenLightsOffHandler implements SensorEventHandler {
     }
 
     private void onHallDoorClose() {
-        for (Room homeRoom : controller.getHome().getRooms()) {
+        for (Room homeRoom : smartHome.getRooms()) {
             for (Light light : homeRoom.getLights()) {
                 SensorCommand command = new SensorCommand(CommandType.LIGHT_OFF, light.getId());
                 controller.sendCommand(command);

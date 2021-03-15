@@ -15,7 +15,7 @@ public class Application {
     public static String DEFAULT_CONF_PATH = "smart-home-1.json";
 
     private final SmartHome smartHome;
-    private final SmartHomeController smartHomeController;
+    private final CommandSender commandSender;
     private final SensorEventLoop eventLoop;
 
     public static void main(String[] args) {
@@ -35,7 +35,7 @@ public class Application {
 
         // обработчики команд и контроллер
         List<SensorCommandHandler> commandHandlers = initCommandHandlers();
-        smartHomeController = new SmartHomeControllerImpl(smartHome, commandHandlers);
+        commandSender = new CommandSenderImpl(commandHandlers);
 
         // создаём обработчики событий
         SensorEventSource eventSource = new SensorEventSourceStub();
@@ -63,7 +63,7 @@ public class Application {
 
         handlers.add(new DoorOpenEventHandler(smartHome));
         handlers.add(new DoorClosedEventHandler(smartHome));
-        handlers.add(new HallDoorClosedThenLightsOffHandler(smartHomeController, smartHome));
+        handlers.add(new HallDoorClosedThenLightsOffHandler(commandSender, smartHome));
         return handlers;
     }
 
