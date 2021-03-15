@@ -9,10 +9,7 @@ import ru.sbt.mipt.oop.events.sources.SensorEventSource;
 import ru.sbt.mipt.oop.events.sources.SensorEventSourceStub;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.*;
 
 public class Application {
@@ -35,9 +32,7 @@ public class Application {
     Application(String[] args) throws IOException {
         // считываем состояние дома из файла
         String filename = (args.length > 0) ? args[0] : DEFAULT_CONF_PATH;
-        InputStream smartHomeStream = Files.newInputStream(
-                Paths.get(filename), StandardOpenOption.READ);
-        smartHome = new JsonConfigurationReader().readSmartHome(smartHomeStream);
+        smartHome = new JsonConfigurationReader(Paths.get(filename)).readSmartHome();
 
         // обработчики команд и контроллер
         Map<CommandType, SensorCommandHandler> commandHandlers = initCommandHandlers(smartHome);

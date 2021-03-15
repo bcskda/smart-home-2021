@@ -45,7 +45,10 @@ public class HomeBuilder {
                 new Door("4", hall, false)));
 
         SmartHome smartHome = new SmartHome(Arrays.asList(kitchen, bathroom, bedroom, hall));
-        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(SmartHome.class, new SmartHomeJsonSerDe())
+                .excludeFieldsWithoutExposeAnnotation().setPrettyPrinting()
+                .create();
         String jsonString = gson.toJson(smartHome);
         System.out.println(jsonString);
         Path path = Paths.get("output.json");

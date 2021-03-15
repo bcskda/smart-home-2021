@@ -1,15 +1,31 @@
 package ru.sbt.mipt.oop;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
 public class JsonConfigurationReader implements ConfigurationReader {
-    static Gson gson = new Gson();
+    static Gson gson = new GsonBuilder()
+            .registerTypeAdapter(SmartHome.class, new SmartHomeJsonSerDe())
+            .create();
+    InputStream stream;
+
+    public JsonConfigurationReader(InputStream stream) {
+        this.stream = stream;
+    }
+
+    public JsonConfigurationReader(Path configPath) throws IOException {
+        this(Files.newInputStream(configPath, StandardOpenOption.READ));
+    }
+
     @Override
-    public SmartHome readSmartHome(InputStream stream) {
+    public SmartHome readSmartHome() {
         Reader reader = new BufferedReader(new InputStreamReader(stream));
         SmartHome smartHome = gson.fromJson(reader, SmartHome.class);
         fillParentReferences(smartHome);
