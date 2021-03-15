@@ -1,5 +1,6 @@
 package ru.sbt.mipt.oop.events.handlers;
 
+import ru.sbt.mipt.oop.Action;
 import ru.sbt.mipt.oop.Light;
 import ru.sbt.mipt.oop.SmartHome;
 import ru.sbt.mipt.oop.events.SensorEvent;
@@ -14,18 +15,22 @@ public class LightOffEventHandler implements SensorEventHandler {
     }
 
     @Override
-    public void handleEvent(SensorEvent event) {
+    public Action handleEvent(SensorEvent event) {
         if (event.getType() != LIGHT_OFF)
-            return;
+            return null;
         Light light = smartHome.getLightById(event.getObjectId());
-        if (light == null) {
-            throw new IllegalArgumentException(
-                    "No light with id " + event.getObjectId());
-        }
-        onLightOff(light);
+        if (light == null)
+            return null;
+        return onLightOff(light);
     }
 
-    private void onLightOff(Light light) {
-        light.setOn(false);
+    private Action onLightOff(Light light) {
+        return component -> {
+            if (! (component instanceof Light))
+                return;
+            Light asLight = (Light) component;
+            if (light.equals(asLight))
+                asLight.setOn(false);
+        };
     }
 }
