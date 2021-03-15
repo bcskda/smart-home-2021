@@ -4,7 +4,7 @@ import ru.sbt.mipt.oop.commands.handlers.LightOffCommandHandler;
 import ru.sbt.mipt.oop.commands.handlers.LogCommandHandler;
 import ru.sbt.mipt.oop.commands.handlers.SensorCommandHandler;
 import ru.sbt.mipt.oop.events.handlers.*;
-import ru.sbt.mipt.oop.events.sources.SensorEventSourceStub;
+import ru.sbt.mipt.oop.events.sources.RandomSensorEventSource;
 
 import java.nio.file.Paths;
 import java.util.*;
@@ -24,7 +24,7 @@ public class Application {
 
             // обработчики событий
             eventLoop = new SensorEventLoop(
-                    new SensorEventSourceStub(),
+                    new RandomSensorEventSource(),
                     makeEventHandlers(smartHome, commandSender));
         } catch (Exception e) {
             throw new IllegalArgumentException("Failed to configure Application", e);
