@@ -1,6 +1,5 @@
 package ru.sbt.mipt.oop;
 
-import ru.sbt.mipt.oop.commands.CommandType;
 import ru.sbt.mipt.oop.commands.handlers.LightOffCommandHandler;
 import ru.sbt.mipt.oop.commands.handlers.LogCommandHandler;
 import ru.sbt.mipt.oop.commands.handlers.SensorCommandHandler;
@@ -35,8 +34,8 @@ public class Application {
         smartHome = new JsonConfigurationReader(Paths.get(filename)).readSmartHome();
 
         // обработчики команд и контроллер
-        Map<CommandType, SensorCommandHandler> commandHandlers = initCommandHandlers(smartHome);
-        smartHomeController = new SmartHomeControllerImpl(smartHome, commandHandlers, new LogCommandHandler());
+        List<SensorCommandHandler> commandHandlers = initCommandHandlers();
+        smartHomeController = new SmartHomeControllerImpl(smartHome, commandHandlers);
 
         // создаём обработчики событий
         SensorEventSource eventSource = new SensorEventSourceStub();
@@ -48,15 +47,10 @@ public class Application {
         eventLoop.runCatchSuppress();
     }
 
-    private Map<CommandType, SensorCommandHandler> initCommandHandlers(SmartHome smartHome) {
-        Map<CommandType, SensorCommandHandler> handlers = new HashMap<>();
-        Map<String, Light> lightsById = new HashMap<>();
-        for (Room room : smartHome.getRooms()) {
-            for (Light light : room.getLights()) {
-                lightsById.put(light.getId(), light);
-            }
-        }
-        handlers.put(CommandType.LIGHT_OFF, new LightOffCommandHandler(lightsById));
+    private List<SensorCommandHandler> initCommandHandlers() {
+        List<SensorCommandHandler> handlers = new ArrayList<>();
+        handlers.add(new LogCommandHandler());
+        handlers.add(new LightOffCommandHandler(smartHome));
         return handlers;
     }
 

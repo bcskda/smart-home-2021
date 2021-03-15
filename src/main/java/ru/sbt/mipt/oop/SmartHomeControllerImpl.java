@@ -1,38 +1,29 @@
 package ru.sbt.mipt.oop;
 
-import ru.sbt.mipt.oop.commands.CommandType;
 import ru.sbt.mipt.oop.commands.SensorCommand;
 import ru.sbt.mipt.oop.commands.handlers.SensorCommandHandler;
-import ru.sbt.mipt.oop.events.handlers.SensorEventHandler;
 
-import java.util.Map;
+import java.util.List;
 
 public class SmartHomeControllerImpl implements SmartHomeController {
     private final SmartHome smartHome;
-    private final Map<CommandType, SensorCommandHandler> commandHandlers;
-    private final SensorCommandHandler defaultHandler;
+    private final List<SensorCommandHandler> commandHandlers;
 
     public SmartHomeControllerImpl(SmartHome smartHome,
-                                   Map<CommandType, SensorCommandHandler> commandHandlers,
-                                   SensorCommandHandler defaultHandler) {
+                                   List<SensorCommandHandler> commandHandlers) {
         this.smartHome = smartHome;
         this.commandHandlers = commandHandlers;
-        this.defaultHandler = defaultHandler;
-    }
-
-    public SmartHomeControllerImpl(SmartHome smartHome, Map<CommandType, SensorCommandHandler> commandHandlers) {
-        this(smartHome, commandHandlers, null);
     }
 
     @Override
     public void sendCommand(SensorCommand command) {
-        System.out.println("Got command: " + command);
-        SensorCommandHandler handler = commandHandlers.getOrDefault(command.getType(), defaultHandler);
-        if (handler == null) {
-            throw new IllegalArgumentException(
-                    "Missing handler for SensorCommandType " + command.getType().toString());
+        for (SensorCommandHandler handler : commandHandlers) {
+            try {
+                handler.handleCommand(command);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-        handler.handleCommand(command);
     }
 
     @Override
