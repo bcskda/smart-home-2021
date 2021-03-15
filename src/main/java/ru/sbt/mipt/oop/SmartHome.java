@@ -1,15 +1,12 @@
 package ru.sbt.mipt.oop;
 
-import com.google.gson.annotations.Expose;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 public class SmartHome {
-    @Expose
-    Collection<Room> rooms;
+    SmartHomeStorage storage = new SmartHomeStorage();
 
     Map<String, Light> lightsById = new HashMap<>();
     Map<String, Door> doorsById = new HashMap<>();
@@ -20,26 +17,23 @@ public class SmartHome {
     }
 
     public SmartHome(Collection<Room> rooms) {
-        this.rooms = rooms;
+        rooms.forEach(this::addRoom);
+    }
 
-        for (Room room : rooms) {
-            for (Light light : room.getLights()) {
-                lightsById.put(light.getId(), light);
-            }
-            for (Door door : room.getDoors()) {
-                doorsById.put(door.getId(), door);
-                roomsByDoor.put(door, room);
-            }
+    // Update
+    public void addRoom(Room room) {
+        storage.rooms.add(room);
+        for (Light light : room.getLights()) {
+            lightsById.put(light.getId(), light);
+        }
+        for (Door door : room.getDoors()) {
+            doorsById.put(door.getId(), door);
+            roomsByDoor.put(door, room);
         }
     }
 
-    // Update handlers after adding rooms
-    public void addRoom(Room room) {
-        rooms.add(room);
-    }
-
     public Collection<Room> getRooms() {
-        return rooms;
+        return storage.getRooms();
     }
 
     public Light getLightById(String lightId) {
