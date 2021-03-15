@@ -24,6 +24,7 @@ public class Application {
 
             // обработчики событий
             eventLoop = new SensorEventLoop(
+                    smartHome,
                     new RandomSensorEventSource(),
                     makeEventHandlers(smartHome, commandSender));
         } catch (Exception e) {

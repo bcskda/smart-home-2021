@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SmartHome {
+public class SmartHome implements Actionable {
     SmartHomeStorage storage = new SmartHomeStorage();
 
     Map<String, Light> lightsById = new HashMap<>();
@@ -32,10 +32,6 @@ public class SmartHome {
         }
     }
 
-    public Collection<Room> getRooms() {
-        return storage.getRooms();
-    }
-
     public Light getLightById(String lightId) {
         return lightsById.get(lightId);
     }
@@ -46,5 +42,14 @@ public class SmartHome {
 
     public Room getRoomByDoor(Door door) {
         return roomsByDoor.get(door);
+    }
+
+    public void forEachRoom(Action action) {
+        storage.getRooms().forEach(room -> room.execute(action));
+    }
+
+    @Override
+    public void execute(Action action) {
+        forEachRoom(action);
     }
 }

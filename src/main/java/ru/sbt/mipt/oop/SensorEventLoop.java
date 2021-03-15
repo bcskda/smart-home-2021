@@ -9,11 +9,14 @@ import java.util.List;
 import java.util.Map;
 
 public class SensorEventLoop {
+    SmartHome smartHome;
     SensorEventSource eventSource;
     List<SensorEventHandler> eventHandlers;
 
-    public SensorEventLoop(SensorEventSource eventSource,
+    public SensorEventLoop(SmartHome smartHome,
+                           SensorEventSource eventSource,
                            List<SensorEventHandler> eventHandlers) {
+        this.smartHome = smartHome;
         this.eventSource = eventSource;
         this.eventHandlers = eventHandlers;
     }
@@ -42,7 +45,9 @@ public class SensorEventLoop {
     private void handleEvent(SensorEvent event) {
         for (SensorEventHandler eventHandler : eventHandlers) {
             try {
-                eventHandler.handleEvent(event);
+                Action action = eventHandler.handleEvent(event);
+                if (action != null)
+                    smartHome.execute(action);
             } catch (Exception e) {
                 e.printStackTrace();
             }
