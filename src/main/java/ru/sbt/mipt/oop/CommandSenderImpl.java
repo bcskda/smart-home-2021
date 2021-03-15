@@ -6,9 +6,11 @@ import ru.sbt.mipt.oop.commands.handlers.SensorCommandHandler;
 import java.util.List;
 
 public class CommandSenderImpl implements CommandSender {
+    private final SmartHome smartHome;
     private final List<SensorCommandHandler> commandHandlers;
 
-    public CommandSenderImpl(List<SensorCommandHandler> commandHandlers) {
+    public CommandSenderImpl(SmartHome smartHome, List<SensorCommandHandler> commandHandlers) {
+        this.smartHome = smartHome;
         this.commandHandlers = commandHandlers;
     }
 
@@ -16,7 +18,9 @@ public class CommandSenderImpl implements CommandSender {
     public void sendCommand(SensorCommand command) {
         for (SensorCommandHandler handler : commandHandlers) {
             try {
-                handler.handleCommand(command);
+                Action action = handler.handleCommand(command);
+                if (action != null)
+                    smartHome.execute(action);
             } catch (Exception e) {
                 e.printStackTrace();
             }
