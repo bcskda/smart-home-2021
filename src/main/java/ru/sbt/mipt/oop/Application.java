@@ -40,16 +40,12 @@ public class Application {
     }
 
     private static List<SensorEventHandler> makeEventHandlers(SmartHome smartHome, CommandSender commandSender) {
-        List<SensorEventHandler> handlers = new ArrayList<>();
-        handlers.add(new LogEventHandler());
-
-        handlers.add(new LightOnEventHandler(smartHome));
-        handlers.add(new LightOffEventHandler(smartHome));
-
-        handlers.add(new DoorOpenEventHandler(smartHome));
-        handlers.add(new DoorClosedEventHandler(smartHome));
-        handlers.add(new HallDoorClosedThenLightsOffHandler(commandSender, smartHome));
-        return handlers;
+        return Arrays.asList(
+                new LogEventHandler(),
+                new LightOnEventHandler(smartHome),
+                new LightOffEventHandler(smartHome),
+                new DoorOpenEventHandler(smartHome),
+                new DoorClosedEventHandler(smartHome),
+                new HallDoorClosedThenLightsOffHandler(commandSender, smartHome));
     }
-
 }
