@@ -33,8 +33,7 @@ public class HallDoorClosedThenLightsOffHandler implements SensorEventHandler {
             if (! (component instanceof Room))
                 return;
             Room asRoom = (Room) component;
-            if (room.equals(asRoom))
-                asRoom.forEachLight(light -> ((Light) light).setOn(false));
+            asRoom.forEachLight(light -> ((Light) light).setOn(false));
         };
     }
 }
