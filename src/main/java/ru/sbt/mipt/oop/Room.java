@@ -13,14 +13,6 @@ public class Room implements HomeComponent, Actionable {
         this.name = name;
     }
 
-    public Collection<Light> getLights() {
-        return lights;
-    }
-
-    public Collection<Door> getDoors() {
-        return doors;
-    }
-
     public String getName() {
         return name;
     }
@@ -35,6 +27,7 @@ public class Room implements HomeComponent, Actionable {
 
     @Override
     public void execute(Action action) {
+        action.execute(this);
         forEachLight(action);
         forEachDoor(action);
     }
