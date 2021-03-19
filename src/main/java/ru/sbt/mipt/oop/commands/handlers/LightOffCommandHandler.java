@@ -18,19 +18,16 @@ public class LightOffCommandHandler implements SensorCommandHandler {
     public Action handleCommand(SensorCommand command) {
         if (command.getType() != LIGHT_OFF)
             return null;
-        Light light = smartHome.getLightById(command.getObjectId());
-        if (light == null)
-            return null;
-        return onLightOff(light);
+        return onLightOff(command);
     }
 
-    private Action onLightOff(Light light) {
+    private Action onLightOff(SensorCommand command) {
         return component -> {
             if (! (component instanceof Light))
                 return;
-            Light asLight = (Light) component;
-            if (light.equals(asLight))
-                asLight.setOn(false);
+            Light light = (Light) component;
+            if (command.getObjectId().equals(light.getId()))
+                light.setOn(false);
         };
     }
 }
