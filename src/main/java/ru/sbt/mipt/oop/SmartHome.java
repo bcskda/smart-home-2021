@@ -2,23 +2,49 @@ package ru.sbt.mipt.oop;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SmartHome {
-    Collection<Room> rooms;
+    SmartHomeStorage storage = new SmartHomeStorage();
+
+    Map<String, Light> lightsById = new HashMap<>();
+    Map<String, Door> doorsById = new HashMap<>();
+    Map<Door, Room> roomsByDoor = new HashMap<>();
 
     public SmartHome() {
-        rooms = new ArrayList<>();
+        this(new ArrayList<>());
     }
 
     public SmartHome(Collection<Room> rooms) {
-        this.rooms = rooms;
+        rooms.forEach(this::addRoom);
     }
 
+    // Update
     public void addRoom(Room room) {
-        rooms.add(room);
+        storage.rooms.add(room);
+        for (Light light : room.getLights()) {
+            lightsById.put(light.getId(), light);
+        }
+        for (Door door : room.getDoors()) {
+            doorsById.put(door.getId(), door);
+            roomsByDoor.put(door, room);
+        }
     }
 
     public Collection<Room> getRooms() {
-        return rooms;
+        return storage.getRooms();
+    }
+
+    public Light getLightById(String lightId) {
+        return lightsById.get(lightId);
+    }
+
+    public Door getDoorById(String doorId) {
+        return doorsById.get(doorId);
+    }
+
+    public Room getRoomByDoor(Door door) {
+        return roomsByDoor.get(door);
     }
 }
