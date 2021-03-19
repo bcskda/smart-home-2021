@@ -21,21 +21,21 @@ public class CommandTests {
 
     @Test
     public void lightOffWorks() {
-        Assert.assertTrue(smartHome.getLightById("2").isOn());
+        smartHome.execute(new LightCheck("2", true));
         SensorCommandHandler handler = new LightOffCommandHandler(smartHome);
         smartHome.execute(handler.handleCommand(
                 new SensorCommand(CommandType.LIGHT_OFF, "2")));
-        Assert.assertFalse(smartHome.getLightById("2").isOn());
+        smartHome.execute(new LightCheck("2", false));
     }
 
     @Test
-    public void closeIsTargeted() {
-        Assert.assertTrue(smartHome.getLightById("2").isOn());
-        Assert.assertTrue(smartHome.getLightById("3").isOn());
+    public void lightOffIsTargeted() {
+        smartHome.execute(new LightCheck("2", true));
+        smartHome.execute(new LightCheck("3", true));
         SensorCommandHandler handler = new LightOffCommandHandler(smartHome);
         smartHome.execute(handler.handleCommand(
                 new SensorCommand(CommandType.LIGHT_OFF, "2")));
-        Assert.assertFalse(smartHome.getLightById("2").isOn());
-        Assert.assertTrue(smartHome.getLightById("3").isOn());
+        smartHome.execute(new LightCheck("2", false));
+        smartHome.execute(new LightCheck("3", true));
     }
 }
