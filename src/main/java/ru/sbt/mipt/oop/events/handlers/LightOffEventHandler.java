@@ -18,19 +18,16 @@ public class LightOffEventHandler implements SensorEventHandler {
     public Action handleEvent(SensorEvent event) {
         if (event.getType() != LIGHT_OFF)
             return null;
-        Light light = smartHome.getLightById(event.getObjectId());
-        if (light == null)
-            return null;
-        return onLightOff(light);
+        return onLightOff(event);
     }
 
-    private Action onLightOff(Light light) {
+    private Action onLightOff(SensorEvent event) {
         return component -> {
             if (! (component instanceof Light))
                 return;
-            Light asLight = (Light) component;
-            if (light.equals(asLight))
-                asLight.setOn(false);
+            Light light = (Light) component;
+            if (event.getObjectId().equals(light.getId()))
+                light.setOn(false);
         };
     }
 }

@@ -18,17 +18,34 @@ public class HallDoorClosedThenLightsOffHandler implements SensorEventHandler {
     public Action handleEvent(SensorEvent event) {
         if (event.getType() != DOOR_CLOSED)
             return null;
-        Door door = smartHome.getDoorById(event.getObjectId());
-        if (door == null)
-            return null;
-        Room room = smartHome.getRoomByDoor(door);
-        if ("hall".equals(room.getName()))
-            return onHallDoorClose(room);
-        else
-            return null;
+        return onAnyDoorClosed(event);
     }
 
-    private Action onHallDoorClose(Room room) {
+    private Action onAnyDoorClosed(SensorEvent event) {
+        return component -> {
+            if (! (component instanceof Room))
+                return;
+            Room room = (Room) component;
+            if (! "hall".equals(room.getName()))
+                return;
+            room.execute(containsThisDoorThen(event, () -> {
+                smartHome.execute(onHallDoorClose());
+            }));
+        };
+    }
+
+    private Action containsThisDoorThen(SensorEvent event, Runnable then) {
+        return component -> {
+            if (! (component instanceof Door))
+                return;
+            Door door = ((Door) component);
+            if (! event.getObjectId().equals(door.getId()))
+                return;
+            then.run();
+        };
+    }
+
+    private Action onHallDoorClose() {
         return component -> {
             if (! (component instanceof Room))
                 return;
