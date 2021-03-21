@@ -12,16 +12,19 @@ import java.util.stream.Collectors;
 public class AlarmStateStale implements AlarmState {
     SmartHome smartHome;
     Collection<SensorEventHandler> eventHandlers;
+    Alarm alarm;
 
-    public AlarmStateStale(SmartHome smartHome, Collection<SensorEventHandler> eventHandlers) {
+    public AlarmStateStale(SmartHome smartHome, Collection<SensorEventHandler> eventHandlers,
+                           Alarm alarm) {
         this.smartHome = smartHome;
         this.eventHandlers = eventHandlers;
+        this.alarm = alarm;
     }
 
     @Override
     public AlarmState Activate(String code) {
         System.out.println("Activating alarm from state: stale");
-        return new AlarmStateArmed(smartHome, eventHandlers, code);
+        return new AlarmStateArmed(smartHome, eventHandlers, alarm, code);
     }
 
     @Override
@@ -32,7 +35,7 @@ public class AlarmStateStale implements AlarmState {
     @Override
     public AlarmState Trigger() {
         System.out.println("Triggering alarm from state: stale");
-        return new AlarmStateFiring(smartHome, eventHandlers);
+        return new AlarmStateFiring(smartHome, eventHandlers, alarm);
     }
 
     @Override

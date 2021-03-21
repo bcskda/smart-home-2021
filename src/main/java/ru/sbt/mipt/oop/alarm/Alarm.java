@@ -3,7 +3,6 @@ package ru.sbt.mipt.oop.alarm;
 import ru.sbt.mipt.oop.Action;
 import ru.sbt.mipt.oop.SmartHome;
 import ru.sbt.mipt.oop.events.SensorEvent;
-import ru.sbt.mipt.oop.events.SensorEventType;
 import ru.sbt.mipt.oop.events.handlers.SensorEventHandler;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -17,7 +16,7 @@ public class Alarm implements SensorEventHandler {
     public Alarm(SmartHome smartHome, Collection<SensorEventHandler> eventHandlers) {
         this.smartHome = smartHome;
         this.eventHandlers = eventHandlers;
-        this.state = new AlarmStateStale(this.smartHome, this.eventHandlers);
+        this.state = new AlarmStateStale(this.smartHome, this.eventHandlers, this);
     }
 
     void Activate(String code) {
