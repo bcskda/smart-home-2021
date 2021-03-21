@@ -1,6 +1,8 @@
 package ru.sbt.mipt.oop.alarm;
 
-public interface AlarmState {
+import ru.sbt.mipt.oop.events.handlers.SensorEventHandler;
+
+public interface AlarmState extends SensorEventHandler {
     AlarmState Activate(String code);
 
     AlarmState Deactivate(String code);

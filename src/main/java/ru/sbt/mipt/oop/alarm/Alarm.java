@@ -1,11 +1,13 @@
 package ru.sbt.mipt.oop.alarm;
 
+import ru.sbt.mipt.oop.Action;
 import ru.sbt.mipt.oop.SmartHome;
+import ru.sbt.mipt.oop.events.SensorEvent;
 import ru.sbt.mipt.oop.events.handlers.SensorEventHandler;
 
 import java.util.Collection;
 
-public class Alarm {
+public class Alarm implements SensorEventHandler {
     SmartHome smartHome;
     Collection<SensorEventHandler> eventHandlers;
     AlarmState state;
@@ -26,5 +28,10 @@ public class Alarm {
 
     void Trigger() {
         state = state.Trigger();
+    }
+
+    @Override
+    public Action handleEvent(SensorEvent event) {
+        return state.handleEvent(event);
     }
 }

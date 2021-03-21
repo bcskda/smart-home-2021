@@ -1,5 +1,6 @@
 package ru.sbt.mipt.oop;
 
+import ru.sbt.mipt.oop.alarm.Alarm;
 import ru.sbt.mipt.oop.commands.handlers.LightOffCommandHandler;
 import ru.sbt.mipt.oop.commands.handlers.LogCommandHandler;
 import ru.sbt.mipt.oop.commands.handlers.SensorCommandHandler;
@@ -41,12 +42,14 @@ public class Application {
     }
 
     private static List<SensorEventHandler> makeEventHandlers(SmartHome smartHome, CommandSender commandSender) {
-        return Arrays.asList(
+        List<SensorEventHandler> handlers = Arrays.asList(
                 new LogEventHandler(),
                 new LightOnEventHandler(smartHome),
                 new LightOffEventHandler(smartHome),
                 new DoorOpenEventHandler(smartHome),
                 new DoorClosedEventHandler(smartHome),
                 new HallDoorClosedThenLightsOffHandler(commandSender, smartHome));
+        return Collections.singletonList(
+                new Alarm(smartHome, handlers));
     }
 }
