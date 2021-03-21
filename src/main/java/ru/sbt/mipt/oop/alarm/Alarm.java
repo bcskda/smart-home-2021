@@ -3,7 +3,9 @@ package ru.sbt.mipt.oop.alarm;
 import ru.sbt.mipt.oop.Action;
 import ru.sbt.mipt.oop.SmartHome;
 import ru.sbt.mipt.oop.events.SensorEvent;
+import ru.sbt.mipt.oop.events.SensorEventType;
 import ru.sbt.mipt.oop.events.handlers.SensorEventHandler;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.Collection;
 
@@ -32,6 +34,14 @@ public class Alarm implements SensorEventHandler {
 
     @Override
     public Action handleEvent(SensorEvent event) {
-        return state.handleEvent(event);
+        switch (event.getType()) {
+            case ALARM_ACTIVATE:
+            case ALARM_DEACTIVATE:
+                throw new NotImplementedException();  // TODO update state
+                // Then pass to other handlers:
+                // return state.handleEvent(event);
+            default:
+                return state.handleEvent(event);
+        }
     }
 }
