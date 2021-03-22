@@ -7,6 +7,7 @@ import ru.sbt.mipt.oop.events.handlers.SensorEventHandler;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class AlarmStateStale implements AlarmState {
@@ -43,10 +44,8 @@ public class AlarmStateStale implements AlarmState {
         List<Action> actions = eventHandlers.stream().map(
                 handler -> handler.handleEvent(event)
         ).collect(Collectors.toList());
-        return component -> {
-            for (Action action : actions) {
-                action.execute(component);
-            }
-        };
+        return component -> actions.stream()
+                .filter(Objects::nonNull)
+                .forEach(action -> action.execute(component));
     }
 }

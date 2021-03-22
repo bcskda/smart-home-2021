@@ -17,6 +17,7 @@ public class AlarmStateArmed implements AlarmState {
                            Alarm alarm, String code) {
         this.smartHome = smartHome;
         this.eventHandlers = eventHandlers;
+        this.alarm = alarm;
         this.code = code;
     }
 
