@@ -69,6 +69,20 @@ public class AlarmTests {
         smartHome.execute(new LightCheck("7", true));
     }
 
+    @Test(expected = IllegalStateException.class)
+    public void stateArmedActivateThrows() {
+        alarm.handleEvent(new AlarmSensorEvent(
+                SensorEventType.ALARM_ACTIVATE, "alarm", "12345"));
+        alarm.handleEvent(new AlarmSensorEvent(
+                SensorEventType.ALARM_ACTIVATE, "alarm", "12345"));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void stateStaleThenDeactivateThrows() {
+        alarm.handleEvent(new AlarmSensorEvent(
+                SensorEventType.ALARM_DEACTIVATE, "alarm", "12345"));
+    }
+
     @Test
     public void stateArmedThenTriggerOnEvents() {
         smartHome.execute(new LightCheck("3", true));
