@@ -8,7 +8,7 @@ import ru.sbt.mipt.oop.events.handlers.SensorEventHandler;
 
 import java.util.Collection;
 
-public class AlarmStateFiring implements AlarmState {
+class AlarmStateFiring implements Alarm.AlarmState {
     SmartHome smartHome;
     Collection<SensorEventHandler> eventHandlers;
     Alarm alarm;
@@ -23,17 +23,17 @@ public class AlarmStateFiring implements AlarmState {
     }
 
     @Override
-    public AlarmState Activate(String code) {
+    public Alarm.AlarmState Activate(String code) {
         throw new IllegalStateException("Cannot activate alarm in state: firing");
     }
 
     @Override
-    public AlarmState Deactivate(String code) {
+    public Alarm.AlarmState Deactivate(String code) {
         throw new IllegalStateException("Cannot deactivate alarm in state: firing");
     }
 
     @Override
-    public AlarmState Trigger() {
+    public Alarm.AlarmState Trigger() {
         throw new IllegalStateException("Cannot trigger alarm in state: firing");
     }
 

@@ -9,6 +9,14 @@ import ru.sbt.mipt.oop.events.handlers.SensorEventHandler;
 import java.util.Collection;
 
 public class Alarm implements SensorEventHandler {
+    interface AlarmState extends SensorEventHandler {
+        AlarmState Activate(String code);
+
+        AlarmState Deactivate(String code);
+
+        AlarmState Trigger();
+    }
+
     SmartHome smartHome;
     Collection<SensorEventHandler> eventHandlers;
     AlarmState state;
@@ -19,7 +27,7 @@ public class Alarm implements SensorEventHandler {
         this.state = new AlarmStateStale(this.smartHome, this.eventHandlers, this);
     }
 
-    void Trigger() {
+    protected void Trigger() {
         state = state.Trigger();
     }
 

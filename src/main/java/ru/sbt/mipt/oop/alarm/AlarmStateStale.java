@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class AlarmStateStale implements AlarmState {
+class AlarmStateStale implements Alarm.AlarmState {
     SmartHome smartHome;
     Collection<SensorEventHandler> eventHandlers;
     Alarm alarm;
@@ -23,18 +23,18 @@ public class AlarmStateStale implements AlarmState {
     }
 
     @Override
-    public AlarmState Activate(String code) {
+    public Alarm.AlarmState Activate(String code) {
         System.out.println("Activating alarm from state: stale");
         return new AlarmStateArmed(smartHome, eventHandlers, alarm, code);
     }
 
     @Override
-    public AlarmState Deactivate(String code) {
+    public Alarm.AlarmState Deactivate(String code) {
         throw new IllegalStateException("Cannot deactivate alarm in state: stale");
     }
 
     @Override
-    public AlarmState Trigger() {
+    public Alarm.AlarmState Trigger() {
         System.out.println("Triggering alarm from state: stale");
         return new AlarmStateFiring(smartHome, eventHandlers, alarm);
     }
