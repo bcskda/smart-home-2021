@@ -13,18 +13,19 @@ public class DoorClosedEventHandler implements SensorEventHandler {
     }
 
     @Override
-    public void handleEvent(SensorEvent event) {
+    public Action handleEvent(SensorEvent event) {
         if (event.getType() != DOOR_CLOSED)
-            return;
-        Door door = smartHome.getDoorById(event.getObjectId());
-        if (door == null) {
-            throw new IllegalArgumentException(
-                    "No door with id " + event.getObjectId());
-        }
-        onDoorClose(door);
+            return null;
+        return onDoorClose(event);
     }
 
-    private void onDoorClose(Door door) {
-        door.setOpen(false);
+    private Action onDoorClose(SensorEvent event) {
+        return component -> {
+            if (! (component instanceof Door))
+                return;
+            Door door = (Door) component;
+            if (event.getObjectId().equals(door.getId()))
+                door.setOpen(false);
+        };
     }
 }

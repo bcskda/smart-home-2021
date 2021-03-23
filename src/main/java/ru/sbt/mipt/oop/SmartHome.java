@@ -2,49 +2,29 @@ package ru.sbt.mipt.oop;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
-public class SmartHome {
-    SmartHomeStorage storage = new SmartHomeStorage();
-
-    Map<String, Light> lightsById = new HashMap<>();
-    Map<String, Door> doorsById = new HashMap<>();
-    Map<Door, Room> roomsByDoor = new HashMap<>();
+public class SmartHome implements HomeComponent, Actionable {
+    final Collection<Room> rooms;
 
     public SmartHome() {
         this(new ArrayList<>());
     }
 
     public SmartHome(Collection<Room> rooms) {
-        rooms.forEach(this::addRoom);
+        this.rooms = rooms;
     }
 
-    // Update
     public void addRoom(Room room) {
-        storage.rooms.add(room);
-        for (Light light : room.getLights()) {
-            lightsById.put(light.getId(), light);
-        }
-        for (Door door : room.getDoors()) {
-            doorsById.put(door.getId(), door);
-            roomsByDoor.put(door, room);
-        }
+        rooms.add(room);
     }
 
-    public Collection<Room> getRooms() {
-        return storage.getRooms();
+    @Override
+    public void execute(Action action) {
+        action.execute(this);
+        forEachRoom(action);
     }
 
-    public Light getLightById(String lightId) {
-        return lightsById.get(lightId);
-    }
-
-    public Door getDoorById(String doorId) {
-        return doorsById.get(doorId);
-    }
-
-    public Room getRoomByDoor(Door door) {
-        return roomsByDoor.get(door);
+    private void forEachRoom(Action action) {
+        rooms.forEach(room -> room.execute(action));
     }
 }

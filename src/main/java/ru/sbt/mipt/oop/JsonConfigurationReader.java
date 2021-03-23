@@ -1,7 +1,6 @@
 package ru.sbt.mipt.oop;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -9,9 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
 public class JsonConfigurationReader implements ConfigurationReader {
-    static Gson gson = new GsonBuilder()
-            .registerTypeAdapter(SmartHome.class, new SmartHomeJsonSerDe())
-            .create();
+    static Gson gson = new Gson();
     InputStream stream;
 
     public JsonConfigurationReader(InputStream stream) {

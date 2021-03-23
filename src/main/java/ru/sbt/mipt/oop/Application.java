@@ -20,10 +20,11 @@ public class Application {
             SmartHome smartHome = new JsonConfigurationReader(Paths.get(filename)).readSmartHome();
 
             // обработчики и контроллер команд
-            CommandSender commandSender = new CommandSenderImpl(makeCommandHandlers(smartHome));
+            CommandSender commandSender = new CommandSenderImpl(smartHome, makeCommandHandlers(smartHome));
 
             // обработчики событий
             eventLoop = new SensorEventLoop(
+                    smartHome,
                     new RandomSensorEventSource(),
                     makeEventHandlers(smartHome, commandSender));
         } catch (Exception e) {

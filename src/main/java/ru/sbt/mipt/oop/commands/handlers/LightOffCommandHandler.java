@@ -1,5 +1,6 @@
 package ru.sbt.mipt.oop.commands.handlers;
 
+import ru.sbt.mipt.oop.Action;
 import ru.sbt.mipt.oop.Light;
 import ru.sbt.mipt.oop.SmartHome;
 import ru.sbt.mipt.oop.commands.SensorCommand;
@@ -14,18 +15,19 @@ public class LightOffCommandHandler implements SensorCommandHandler {
     }
 
     @Override
-    public void handleCommand(SensorCommand command) {
+    public Action handleCommand(SensorCommand command) {
         if (command.getType() != LIGHT_OFF)
-            return;
-        Light light = smartHome.getLightById(command.getObjectId());
-        if (light == null) {
-            throw new IllegalArgumentException(
-                    "No light with id " + command.getObjectId());
-        }
-        onLightOff(light);
+            return null;
+        return onLightOff(command);
     }
 
-    private void onLightOff(Light light) {
-        light.setOn(false);
+    private Action onLightOff(SensorCommand command) {
+        return component -> {
+            if (! (component instanceof Light))
+                return;
+            Light light = (Light) component;
+            if (command.getObjectId().equals(light.getId()))
+                light.setOn(false);
+        };
     }
 }

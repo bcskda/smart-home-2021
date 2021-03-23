@@ -1,5 +1,6 @@
 package ru.sbt.mipt.oop.events.handlers;
 
+import ru.sbt.mipt.oop.Action;
 import ru.sbt.mipt.oop.Door;
 import ru.sbt.mipt.oop.SmartHome;
 import ru.sbt.mipt.oop.events.SensorEvent;
@@ -14,18 +15,19 @@ public class DoorOpenEventHandler implements SensorEventHandler {
     }
 
     @Override
-    public void handleEvent(SensorEvent event) {
+    public Action handleEvent(SensorEvent event) {
         if (event.getType() != DOOR_OPEN)
-            return;
-        Door door = smartHome.getDoorById(event.getObjectId());
-        if (door == null) {
-            throw new IllegalArgumentException(
-                    "No door with id " + event.getObjectId());
-        }
-        onDoorOpen(door);
+            return null;
+        return onDoorOpen(event);
     }
 
-    private void onDoorOpen(Door door) {
-        door.setOpen(true);
+    private Action onDoorOpen(SensorEvent event) {
+        return component -> {
+            if (! (component instanceof Door))
+                return;
+            Door door = (Door) component;
+            if (event.getObjectId().equals(door.getId()))
+                door.setOpen(true);
+        };
     }
 }
