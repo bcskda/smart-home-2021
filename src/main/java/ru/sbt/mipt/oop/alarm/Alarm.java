@@ -1,47 +1,39 @@
 package ru.sbt.mipt.oop.alarm;
 
 import ru.sbt.mipt.oop.Action;
-import ru.sbt.mipt.oop.SmartHome;
-import ru.sbt.mipt.oop.events.AlarmSensorEvent;
-import ru.sbt.mipt.oop.events.SensorEvent;
-import ru.sbt.mipt.oop.events.handlers.SensorEventHandler;
 
-import java.util.Collection;
+import java.util.function.Consumer;
 
-public class Alarm implements SensorEventHandler {
-    interface AlarmState extends SensorEventHandler {
-        AlarmState Activate(String code);
+public class Alarm {
+    interface AlarmState {
+        AlarmState activate(String code);
 
-        AlarmState Deactivate(String code);
+        AlarmState deactivate(String code);
 
-        AlarmState Trigger();
+        AlarmState trigger();
     }
 
-    SmartHome smartHome;
-    Collection<SensorEventHandler> eventHandlers;
+    Consumer<Action> onActions;
     AlarmState state;
 
-    public Alarm(SmartHome smartHome, Collection<SensorEventHandler> eventHandlers) {
-        this.smartHome = smartHome;
-        this.eventHandlers = eventHandlers;
-        this.state = new AlarmStateStale(this.smartHome, this.eventHandlers, this);
+    public Alarm(Consumer<Action> onActions) {
+        this.onActions = onActions;
+        this.state = new AlarmStateStale(this);
     }
 
-    protected void Trigger() {
-        state = state.Trigger();
+    public Class<? extends Alarm.AlarmState> getState() {
+        return state.getClass();
     }
 
-    @Override
-    public Action handleEvent(SensorEvent event) {
-        switch (event.getType()) {
-            case ALARM_ACTIVATE:
-                state = state.Activate(((AlarmSensorEvent) event).getCode());
-                return null;
-            case ALARM_DEACTIVATE:
-                state = state.Deactivate(((AlarmSensorEvent) event).getCode());
-                return null;
-            default:
-                return state.handleEvent(event);
-        }
+    public void activate(String code) {
+        state = state.activate(code);
+    }
+
+    public void deactivate(String code) {
+        state = state.deactivate(code);
+    }
+
+    public void trigger() {
+        state = state.trigger();
     }
 }

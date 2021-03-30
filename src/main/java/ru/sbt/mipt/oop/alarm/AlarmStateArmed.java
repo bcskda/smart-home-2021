@@ -1,50 +1,32 @@
 package ru.sbt.mipt.oop.alarm;
 
-import ru.sbt.mipt.oop.Action;
-import ru.sbt.mipt.oop.SmartHome;
-import ru.sbt.mipt.oop.events.SensorEvent;
-import ru.sbt.mipt.oop.events.handlers.SensorEventHandler;
-
-import java.util.Collection;
-
-class AlarmStateArmed implements Alarm.AlarmState {
-    SmartHome smartHome;
-    Collection<SensorEventHandler> eventHandlers;
+public class AlarmStateArmed implements Alarm.AlarmState {
     Alarm alarm;
     String code;
 
-    public AlarmStateArmed(SmartHome smartHome, Collection<SensorEventHandler> eventHandlers,
-                           Alarm alarm, String code) {
-        this.smartHome = smartHome;
-        this.eventHandlers = eventHandlers;
+    public AlarmStateArmed(Alarm alarm, String code) {
         this.alarm = alarm;
         this.code = code;
     }
 
     @Override
-    public Alarm.AlarmState Activate(String code) {
+    public Alarm.AlarmState activate(String code) {
         throw new IllegalStateException("Cannot activate alarm in state: armed");
     }
 
     @Override
-    public Alarm.AlarmState Deactivate(String code) {
+    public Alarm.AlarmState deactivate(String code) {
         if (this.code.equals(code)) {
             System.out.println("Deactivating alarm from state: armed");
-            return new AlarmStateStale(smartHome, eventHandlers, alarm);
+            return new AlarmStateStale(alarm);
         } else {
-            return this.Trigger();
+            return this.trigger();
         }
     }
 
     @Override
-    public Alarm.AlarmState Trigger() {
+    public Alarm.AlarmState trigger() {
         System.out.println("Triggering alarm from state: armed");
-        return new AlarmStateFiring(smartHome, eventHandlers, alarm);
-    }
-
-    @Override
-    public Action handleEvent(SensorEvent event) {
-        alarm.Trigger();
-        return null;
+        return new AlarmStateFiring(alarm);
     }
 }
