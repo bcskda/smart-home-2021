@@ -1,15 +1,9 @@
 package ru.sbt.mipt.oop.alarm;
 
-import ru.sbt.mipt.oop.Action;
-
-import java.util.function.Consumer;
-
 public class Alarm {
-    Consumer<Action> onActions;
     AlarmState state;
 
-    public Alarm(Consumer<Action> onActions) {
-        this.onActions = onActions;
+    public Alarm() {
         this.state = new AlarmStateStale(this);
     }
 
@@ -23,9 +17,5 @@ public class Alarm {
 
     public void deactivate(String code) {
         state = state.deactivate(code);
-    }
-
-    public void trigger() {
-        state = state.trigger();
     }
 }

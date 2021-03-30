@@ -1,6 +1,5 @@
 package ru.sbt.mipt.oop;
 
-import ru.sbt.mipt.oop.alarm.Alarm;
 import ru.sbt.mipt.oop.commands.handlers.LightOffCommandHandler;
 import ru.sbt.mipt.oop.commands.handlers.LogCommandHandler;
 import ru.sbt.mipt.oop.commands.handlers.SensorCommandHandler;
@@ -9,6 +8,7 @@ import ru.sbt.mipt.oop.events.sources.RandomSensorEventSource;
 
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Stream;
 
 public class Application {
     public static String DEFAULT_CONF_PATH = "smart-home-1.json";
@@ -42,14 +42,21 @@ public class Application {
     }
 
     private static List<EventHandler> makeEventHandlers(SmartHome smartHome, CommandSender commandSender) {
-        List<EventHandler> handlers = Arrays.asList(
-                new LogEventHandler(),
+        List<EventHandler> sensorHandlers = Arrays.asList(
                 new LightOnEventHandler(smartHome),
                 new LightOffEventHandler(smartHome),
                 new DoorOpenEventHandler(smartHome),
                 new DoorClosedEventHandler(smartHome),
                 new HallDoorClosedThenLightsOffHandler(commandSender, smartHome));
-        return Collections.singletonList(
-                new Alarm(smartHome, handlers));
+        Stream<EventHandler> wrappedSensorHandlers = sensorHandlers.stream().map(
+                eventHandler -> new FilterByAlarmHandlerDecorator(smartHome.getAlarm(), eventHandler)
+        );
+
+        List<EventHandler> allHandlers = Arrays.asList(
+                new LogEventHandler(),
+                new AlarmEventHandler(smartHome.getAlarm()));
+        wrappedSensorHandlers.forEach(allHandlers::add);
+
+        return allHandlers;
     }
 }
