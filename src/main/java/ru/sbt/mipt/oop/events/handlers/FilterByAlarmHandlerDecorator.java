@@ -1,10 +1,7 @@
 package ru.sbt.mipt.oop.events.handlers;
 
 import ru.sbt.mipt.oop.Action;
-import ru.sbt.mipt.oop.alarm.Alarm;
-import ru.sbt.mipt.oop.alarm.AlarmStateArmed;
-import ru.sbt.mipt.oop.alarm.AlarmStateStale;
-import ru.sbt.mipt.oop.alarm.AlarmStateFiring;
+import ru.sbt.mipt.oop.alarm.*;
 import ru.sbt.mipt.oop.events.Event;
 import ru.sbt.mipt.oop.events.SensorEvent;
 
@@ -25,12 +22,10 @@ public class FilterByAlarmHandlerDecorator implements EventHandler {
     }
 
     private Action onSensorEvent(SensorEvent event) {
-        switch (alarm.getState()) {
-            case AlarmStateStale.class:
-                return wrapped.handleEvent(event);
-            case AlarmStateArmed.class:
-            case AlarmStateFiring.class:
-                return null;
-        }
+        Class<? extends AlarmState> stateClazz = alarm.getState();
+        if (stateClazz == AlarmStateStale.class)
+            return wrapped.handleEvent(event);
+        else
+            return null;
     }
 }

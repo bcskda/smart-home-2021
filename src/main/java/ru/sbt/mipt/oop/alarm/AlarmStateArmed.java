@@ -1,6 +1,6 @@
 package ru.sbt.mipt.oop.alarm;
 
-public class AlarmStateArmed implements Alarm.AlarmState {
+public class AlarmStateArmed implements AlarmState {
     Alarm alarm;
     String code;
 
@@ -10,12 +10,12 @@ public class AlarmStateArmed implements Alarm.AlarmState {
     }
 
     @Override
-    public Alarm.AlarmState activate(String code) {
+    public AlarmState activate(String code) {
         throw new IllegalStateException("Cannot activate alarm in state: armed");
     }
 
     @Override
-    public Alarm.AlarmState deactivate(String code) {
+    public AlarmState deactivate(String code) {
         if (this.code.equals(code)) {
             System.out.println("Deactivating alarm from state: armed");
             return new AlarmStateStale(alarm);
@@ -25,7 +25,7 @@ public class AlarmStateArmed implements Alarm.AlarmState {
     }
 
     @Override
-    public Alarm.AlarmState trigger() {
+    public AlarmState trigger() {
         System.out.println("Triggering alarm from state: armed");
         return new AlarmStateFiring(alarm);
     }

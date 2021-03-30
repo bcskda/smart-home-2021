@@ -5,14 +5,6 @@ import ru.sbt.mipt.oop.Action;
 import java.util.function.Consumer;
 
 public class Alarm {
-    interface AlarmState {
-        AlarmState activate(String code);
-
-        AlarmState deactivate(String code);
-
-        AlarmState trigger();
-    }
-
     Consumer<Action> onActions;
     AlarmState state;
 
@@ -21,7 +13,7 @@ public class Alarm {
         this.state = new AlarmStateStale(this);
     }
 
-    public Class<? extends Alarm.AlarmState> getState() {
+    public Class<? extends AlarmState> getState() {
         return state.getClass();
     }
 
