@@ -52,9 +52,9 @@ public class Application {
                 eventHandler -> new FilterByAlarmHandlerDecorator(smartHome.getAlarm(), eventHandler)
         );
 
-        List<EventHandler> allHandlers = Arrays.asList(
-                new LogEventHandler(),
-                new AlarmEventHandler(smartHome.getAlarm()));
+        List<EventHandler> allHandlers = new ArrayList<>();
+        allHandlers.add(new LogEventHandler());
+        allHandlers.add(new AlarmEventHandler(smartHome.getAlarm()));
         wrappedSensorHandlers.forEach(allHandlers::add);
 
         return allHandlers;
