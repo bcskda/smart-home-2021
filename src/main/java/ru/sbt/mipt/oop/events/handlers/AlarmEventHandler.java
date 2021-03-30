@@ -4,9 +4,11 @@ import ru.sbt.mipt.oop.Action;
 import ru.sbt.mipt.oop.HomeComponent;
 import ru.sbt.mipt.oop.Light;
 import ru.sbt.mipt.oop.alarm.Alarm;
+import ru.sbt.mipt.oop.alarm.AlarmStateArmed;
 import ru.sbt.mipt.oop.alarm.AlarmStateFiring;
 import ru.sbt.mipt.oop.events.AlarmEvent;
 import ru.sbt.mipt.oop.events.Event;
+import ru.sbt.mipt.oop.events.SensorEvent;
 
 public class AlarmEventHandler implements EventHandler {
     Alarm alarm;
@@ -17,17 +19,34 @@ public class AlarmEventHandler implements EventHandler {
 
     @Override
     public Action handleEvent(Event event) {
-        if (!(event instanceof AlarmEvent))
-            return null;
-        return onAlarmEvent((AlarmEvent) event);
+        if (event instanceof AlarmEvent)
+            return onAlarmEvent((AlarmEvent) event);
+        else if (event instanceof SensorEvent)
+            return onSensorEvent((SensorEvent) event);
+        else return null;
     }
 
     Action onAlarmEvent(AlarmEvent event) {
         updateAlarmState(event);
-        if (alarm.getState() == AlarmStateFiring.class) {
+        if (isFiring()) {
             return onAlarmFiring();
         }
         return null;
+    }
+
+    Action onSensorEvent(SensorEvent event) {
+        if (isFiring() || isArmed()) {
+            return onAlarmFiring();
+        }
+        return null;
+    }
+
+    boolean isFiring() {
+        return alarm.getState() == AlarmStateFiring.class;
+    }
+
+    boolean isArmed() {
+        return alarm.getState() == AlarmStateArmed.class;
     }
 
     void updateAlarmState(AlarmEvent event){
