@@ -41,8 +41,8 @@ public class Application {
         return handlers;
     }
 
-    private static List<SensorEventHandler> makeEventHandlers(SmartHome smartHome, CommandSender commandSender) {
-        List<SensorEventHandler> handlers = Arrays.asList(
+    private static List<EventHandler> makeEventHandlers(SmartHome smartHome, CommandSender commandSender) {
+        List<EventHandler> handlers = Arrays.asList(
                 new LogEventHandler(),
                 new LightOnEventHandler(smartHome),
                 new LightOffEventHandler(smartHome),
