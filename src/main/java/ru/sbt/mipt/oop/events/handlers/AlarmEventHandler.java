@@ -3,6 +3,7 @@ package ru.sbt.mipt.oop.events.handlers;
 import ru.sbt.mipt.oop.Action;
 import ru.sbt.mipt.oop.Actionable;
 import ru.sbt.mipt.oop.Light;
+import ru.sbt.mipt.oop.NotificationSender;
 import ru.sbt.mipt.oop.alarm.Alarm;
 import ru.sbt.mipt.oop.events.AlarmEvent;
 import ru.sbt.mipt.oop.events.Event;
@@ -10,9 +11,11 @@ import ru.sbt.mipt.oop.events.SensorEvent;
 
 public class AlarmEventHandler implements EventHandler {
     Alarm alarm;
+    NotificationSender notificationSender;
 
-    public AlarmEventHandler(Alarm alarm) {
+    public AlarmEventHandler(Alarm alarm, NotificationSender notificationSender) {
         this.alarm = alarm;
+        this.notificationSender = notificationSender;
     }
 
     @Override
@@ -61,10 +64,6 @@ public class AlarmEventHandler implements EventHandler {
         };
     }
 
-    void sendSms() {
-        System.out.println("Sending SMS");
-    }
-
     Action makeSendSms() {
         return new Action() {
             boolean sent = false;
@@ -72,7 +71,7 @@ public class AlarmEventHandler implements EventHandler {
             @Override
             public void execute(Actionable component) {
                 if (!sent) {
-                    sendSms();
+                    notificationSender.sendSms();
                     sent = true;
                 }
             }

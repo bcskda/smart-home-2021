@@ -54,7 +54,7 @@ public class Application {
 
         List<EventHandler> allHandlers = new ArrayList<>();
         allHandlers.add(new LogEventHandler());
-        allHandlers.add(new AlarmEventHandler(smartHome.getAlarm()));
+        allHandlers.add(new AlarmEventHandler(smartHome.getAlarm(), new NotificationSender()));
         wrappedSensorHandlers.forEach(allHandlers::add);
 
         return allHandlers;

@@ -24,7 +24,7 @@ public class AlarmTests {
         filteredDoorClosedHandler = new FilterByAlarmHandlerDecorator(
                 smartHome.getAlarm(), new DoorClosedEventHandler(smartHome)
         );
-        alarmEventHandler = new AlarmEventHandler(smartHome.getAlarm());
+        alarmEventHandler = new AlarmEventHandler(smartHome.getAlarm(), new NotificationSender());
     }
 
     @Test
