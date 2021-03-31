@@ -1,11 +1,9 @@
 package ru.sbt.mipt.oop.events.handlers;
 
 import ru.sbt.mipt.oop.Action;
-import ru.sbt.mipt.oop.HomeComponent;
+import ru.sbt.mipt.oop.Actionable;
 import ru.sbt.mipt.oop.Light;
 import ru.sbt.mipt.oop.alarm.Alarm;
-import ru.sbt.mipt.oop.alarm.AlarmStateArmed;
-import ru.sbt.mipt.oop.alarm.AlarmStateFiring;
 import ru.sbt.mipt.oop.events.AlarmEvent;
 import ru.sbt.mipt.oop.events.Event;
 import ru.sbt.mipt.oop.events.SensorEvent;
@@ -28,28 +26,20 @@ public class AlarmEventHandler implements EventHandler {
 
     Action onAlarmEvent(AlarmEvent event) {
         updateAlarmState(event);
-        if (isFiring()) {
+        if (alarm.isFiring()) {
             return onAlarmFiring();
         }
         return null;
     }
 
     Action onSensorEvent(SensorEvent event) {
-        if (isFiring() || isArmed()) {
+        if (alarm.isFiring() || alarm.isArmed()) {
             return onAlarmFiring();
         }
         return null;
     }
 
-    boolean isFiring() {
-        return alarm.getState() == AlarmStateFiring.class;
-    }
-
-    boolean isArmed() {
-        return alarm.getState() == AlarmStateArmed.class;
-    }
-
-    void updateAlarmState(AlarmEvent event){
+    void updateAlarmState(AlarmEvent event) {
         switch (event.getType()) {
             case ALARM_ACTIVATE:
                 alarm.activate(event.getCode());
@@ -66,8 +56,8 @@ public class AlarmEventHandler implements EventHandler {
         final Action actSms = makeSendSms();
         final Action actLight = makeToggleAllLights();
         return component -> {
-            actSms.execute(component);
-            actLight.execute(component);
+            component.execute(actSms);
+            component.execute(actLight);
         };
     }
 
@@ -80,7 +70,7 @@ public class AlarmEventHandler implements EventHandler {
             boolean sent = false;
 
             @Override
-            public void execute(HomeComponent component) {
+            public void execute(Actionable component) {
                 if (!sent) {
                     sendSms();
                     sent = true;

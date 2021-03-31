@@ -12,7 +12,7 @@ public class LightCheck implements Action {
     }
 
     @Override
-    public void execute(HomeComponent component) {
+    public void execute(Actionable component) {
         if (! (component instanceof Light))
             return;
         Light light = (Light) component;

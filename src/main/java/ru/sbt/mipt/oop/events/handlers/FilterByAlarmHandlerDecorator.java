@@ -22,8 +22,7 @@ public class FilterByAlarmHandlerDecorator implements EventHandler {
     }
 
     private Action onSensorEvent(SensorEvent event) {
-        Class<? extends AlarmState> stateClazz = alarm.getState();
-        if (stateClazz == AlarmStateStale.class)
+        if (alarm.isStale())
             return wrapped.handleEvent(event);
         else
             return null;

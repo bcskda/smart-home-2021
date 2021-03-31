@@ -1,5 +1,5 @@
 package ru.sbt.mipt.oop;
 
 public interface Action {
-    void execute(HomeComponent component);
+    void execute(Actionable component);
 }

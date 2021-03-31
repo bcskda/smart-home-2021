@@ -5,7 +5,7 @@ import ru.sbt.mipt.oop.alarm.Alarm;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class SmartHome implements HomeComponent, Actionable {
+public class SmartHome implements Actionable {
     final private Collection<Room> rooms;
     final private Alarm alarm;
 

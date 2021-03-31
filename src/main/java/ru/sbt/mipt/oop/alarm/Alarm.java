@@ -7,8 +7,16 @@ public class Alarm {
         this.state = new AlarmStateStale(this);
     }
 
-    public Class<? extends AlarmState> getState() {
-        return state.getClass();
+    public boolean isStale() {
+        return state instanceof AlarmStateStale;
+    }
+
+    public boolean isArmed() {
+        return state instanceof AlarmStateArmed;
+    }
+
+    public boolean isFiring() {
+        return state instanceof AlarmStateFiring;
     }
 
     public void activate(String code) {
