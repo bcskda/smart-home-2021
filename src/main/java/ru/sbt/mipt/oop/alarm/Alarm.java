@@ -26,4 +26,8 @@ public class Alarm {
     public void deactivate(String code) {
         state = state.deactivate(code);
     }
+
+    public void trigger() {
+        state = state.trigger();
+    }
 }

@@ -19,6 +19,6 @@ public class AlarmStateFiring implements AlarmState {
 
     @Override
     public AlarmState trigger() {
-        throw new IllegalStateException("Cannot trigger alarm in state: firing");
+        return this;
     }
 }
