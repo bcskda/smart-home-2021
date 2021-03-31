@@ -8,6 +8,7 @@ import java.util.Collection;
 public class SmartHome implements Actionable {
     final private Collection<Room> rooms;
     final private Alarm alarm;
+    final private NotificationSender notificationSender;
 
     public SmartHome() {
         this(new ArrayList<>());
@@ -16,6 +17,7 @@ public class SmartHome implements Actionable {
     public SmartHome(Collection<Room> rooms) {
         this.rooms = rooms;
         this.alarm = new Alarm();
+        this.notificationSender = new NotificationSender();
     }
 
     public void addRoom(Room room) {
@@ -24,6 +26,10 @@ public class SmartHome implements Actionable {
 
     public Alarm getAlarm() {
         return alarm;
+    }
+
+    public NotificationSender getNotificationSender() {
+        return notificationSender;
     }
 
     @Override

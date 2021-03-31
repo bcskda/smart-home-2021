@@ -1,5 +1,8 @@
 package ru.sbt.mipt.oop;
 
+import ru.sbt.mipt.oop.actions.PairActionDecorator;
+import ru.sbt.mipt.oop.actions.RunOnceDecorator;
+import ru.sbt.mipt.oop.actions.ToggleLights;
 import ru.sbt.mipt.oop.commands.handlers.LightOffCommandHandler;
 import ru.sbt.mipt.oop.commands.handlers.LogCommandHandler;
 import ru.sbt.mipt.oop.commands.handlers.SensorCommandHandler;
@@ -52,9 +55,23 @@ public class Application {
                 eventHandler -> new FilterByAlarmHandlerDecorator(smartHome.getAlarm(), eventHandler)
         );
 
+        EventHandler alwaysWhenFiring = new WithNotifyHandlerDecorator(
+                smartHome.getNotificationSender(),
+                new UnconditionalHandler(new PairActionDecorator(
+                        new RunOnceDecorator(() -> smartHome.getAlarm().trigger()),
+                        new ToggleLights()
+                ))
+        );
+        EventHandler onSensorWhenArmed = new FilterOnSensorHandlerDecorator(alwaysWhenFiring);
+
         List<EventHandler> allHandlers = new ArrayList<>();
         allHandlers.add(new LogEventHandler());
-        allHandlers.add(new AlarmEventHandler(smartHome.getAlarm(), new NotificationSender()));
+        allHandlers.add(new AlarmSecurityEventHandler(
+                smartHome.getAlarm(),
+                new AlarmStateUpdateHandler(smartHome.getAlarm()))
+                .setOnAlarmArmed(onSensorWhenArmed)
+                .setOnAlarmFiring(alwaysWhenFiring)
+        );
         wrappedSensorHandlers.forEach(allHandlers::add);
 
         return allHandlers;
