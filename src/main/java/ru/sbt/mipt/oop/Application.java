@@ -3,11 +3,11 @@ package ru.sbt.mipt.oop;
 import ru.sbt.mipt.oop.actions.PairActionDecorator;
 import ru.sbt.mipt.oop.actions.RunOnceDecorator;
 import ru.sbt.mipt.oop.actions.ToggleLights;
+import ru.sbt.mipt.oop.ccadapt.EventHandlerAdaptorFactory;
 import ru.sbt.mipt.oop.commands.handlers.LightOffCommandHandler;
 import ru.sbt.mipt.oop.commands.handlers.LogCommandHandler;
 import ru.sbt.mipt.oop.commands.handlers.SensorCommandHandler;
 import ru.sbt.mipt.oop.events.handlers.*;
-import ru.sbt.mipt.oop.events.sources.RandomSensorEventSource;
 
 import java.nio.file.Paths;
 import java.util.*;
@@ -17,7 +17,7 @@ public class Application {
     public static String DEFAULT_CONF_PATH = "smart-home-1.json";
 
     public static void main(String[] args) {
-        SensorEventLoop eventLoop;
+        com.coolcompany.smarthome.events.SensorEventsManager eventsManager = new com.coolcompany.smarthome.events.SensorEventsManager();
         try {
             // считываем состояние дома из файла
             String filename = (args.length > 0) ? args[0] : DEFAULT_CONF_PATH;
@@ -27,14 +27,16 @@ public class Application {
             CommandSender commandSender = new CommandSenderImpl(smartHome, makeCommandHandlers(smartHome));
 
             // обработчики событий
-            eventLoop = new SensorEventLoop(
-                    smartHome,
-                    new RandomSensorEventSource(),
-                    makeEventHandlers(smartHome, commandSender));
+            EventHandlerAdaptorFactory eventHandlerAdaptorFactory = new EventHandlerAdaptorFactory(action -> {
+                if (action != null)
+                    smartHome.execute(action);
+            });
+            Collection<EventHandler> eventHandlers = makeEventHandlers(smartHome, commandSender);
+            eventHandlers.stream().map(eventHandlerAdaptorFactory::adapt).forEach(eventsManager::registerEventHandler);
         } catch (Exception e) {
             throw new IllegalArgumentException("Failed to configure Application", e);
         }
-        eventLoop.runCatchSuppress();
+        eventsManager.start();
     }
 
     private static List<SensorCommandHandler> makeCommandHandlers(SmartHome smartHome) {
@@ -66,9 +68,10 @@ public class Application {
 
         List<EventHandler> allHandlers = new ArrayList<>();
         allHandlers.add(new LogEventHandler());
-        allHandlers.add(new AlarmSecurityEventHandler(
-                smartHome.getAlarm(),
-                new AlarmStateUpdateHandler(smartHome.getAlarm()))
+        allHandlers.add(
+                new AlarmSecurityEventHandler(
+                        smartHome.getAlarm(),
+                        new AlarmStateUpdateHandler(smartHome.getAlarm()))
                 .setOnAlarmArmed(onSensorWhenArmed)
                 .setOnAlarmFiring(alwaysWhenFiring)
         );
