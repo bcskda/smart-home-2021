@@ -1,28 +1,21 @@
 package ru.sbt.mipt.oop.events.handlers;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 import ru.sbt.mipt.oop.Action;
 import ru.sbt.mipt.oop.alarm.Alarm;
 import ru.sbt.mipt.oop.events.Event;
 
+@Component
 public class AlarmSecurityEventHandler implements EventHandler {
-    private final Alarm alarm;
-    private final AlarmStateUpdateHandler stateUpdater;
+    @Autowired private Alarm alarm;
+    @Autowired private AlarmStateUpdateHandler stateUpdater;
+    @Autowired private AlarmWhenArmedHandler onAlarmArmed;
+    @Autowired private AlarmWhenFiringHandler onAlarmFiring;
 
-    private EventHandler onAlarmArmed;
-    private EventHandler onAlarmFiring;
-
-    public AlarmSecurityEventHandler(Alarm alarm, AlarmStateUpdateHandler stateUpdater) {
-        this.alarm = alarm;
-        this.stateUpdater = stateUpdater;
-    }
-
-    public AlarmSecurityEventHandler setOnAlarmArmed(EventHandler onAlarmArmed) {
-        this.onAlarmArmed = onAlarmArmed;
-        return this;
-    }
-
-    public AlarmSecurityEventHandler setOnAlarmFiring(EventHandler onAlarmFiring) {
-        this.onAlarmFiring = onAlarmFiring;
+    @Bean
+    public AlarmSecurityEventHandler alarmSecurityEventHandler() {
         return this;
     }
 
