@@ -40,4 +40,40 @@ public class CommandTests {
             Assert.assertTrue(light.isOn());
         });
     }
+
+    @Test
+    public void corridorLightOn() {
+        smartHome.execute(component -> {
+            if (!(component instanceof Light))
+                return;
+            Light light = (Light) component;
+            light.setOn(false);
+        });
+        commandBuilder.build("corridorLightOn").execute();
+        smartHome.execute(component -> {
+            if (!(component instanceof Room))
+                return;
+            Room room = (Room) component;
+            if (! "corridor".equals(room.getName()))
+                return;
+            room.forEachLight(light -> {
+                Light lightAsLight = (Light) light;
+                Assert.assertTrue(lightAsLight.isOn());
+            });
+        });
+    }
+
+    @Test
+    public void frontDoorClose() {
+        smartHome.execute(component -> {
+            if (!(component instanceof Door))
+                return;
+            Door door = (Door) component;
+            if (! "4".equals(door.getId()))
+                return;
+            door.setOpen(true);
+        });
+        commandBuilder.build("frontDoorClose").execute();
+        smartHome.execute(new DoorCheck("4", false));
+    }
 }
