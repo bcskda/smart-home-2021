@@ -5,11 +5,11 @@ import rc.RemoteControl;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RemoteControlMock implements RemoteControl {
+public class RemoteControlLoggingDecorator implements RemoteControl {
     private final List<String> buttonCodes = new ArrayList<>();
     public final RemoteControl wrappedRc;
 
-    public RemoteControlMock(RemoteControl wrappedRc) {
+    public RemoteControlLoggingDecorator(RemoteControl wrappedRc) {
         this.wrappedRc = wrappedRc;
     }
 

@@ -6,11 +6,11 @@ import ru.sbt.mipt.oop.remotecontrol.RemoteControlImpl;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class RemoteControlMockTests {
+public class RemoteControlTests {
     @Test
     public void dispatch() {
-        RemoteControlMock rcFirst = new RemoteControlMock(null);
-        RemoteControlMock rcSecond = new RemoteControlMock(null);
+        RemoteControlLoggingDecorator rcFirst = new RemoteControlLoggingDecorator(null);
+        RemoteControlLoggingDecorator rcSecond = new RemoteControlLoggingDecorator(null);
         RemoteControlRegistryMock registryMock = new RemoteControlRegistryMock();
         registryMock.registerRemoteControl(rcFirst, "first");
         registryMock.registerRemoteControl(rcSecond, "second");
@@ -43,8 +43,8 @@ public class RemoteControlMockTests {
         AtomicInteger flagSecond = new AtomicInteger();
         rcSecond.addCommand("B", () -> { flagSecond.set(1); });
 
-        RemoteControlMock rcMockFirst = new RemoteControlMock(rcFirst);
-        RemoteControlMock rcMockSecond = new RemoteControlMock(rcSecond);
+        RemoteControlLoggingDecorator rcMockFirst = new RemoteControlLoggingDecorator(rcFirst);
+        RemoteControlLoggingDecorator rcMockSecond = new RemoteControlLoggingDecorator(rcSecond);
         RemoteControlRegistryMock registryMock = new RemoteControlRegistryMock();
         registryMock.registerRemoteControl(rcMockFirst, "first");
         registryMock.registerRemoteControl(rcMockSecond, "second");
