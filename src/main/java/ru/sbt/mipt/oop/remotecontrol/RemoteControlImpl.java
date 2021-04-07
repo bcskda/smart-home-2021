@@ -13,14 +13,16 @@ public class RemoteControlImpl implements RemoteControl {
         this.id = id;
     }
 
+    public void addCommand(String buttonCode, Runnable command) {
+        commands.put(buttonCode, command);
+    }
+
     @Override
     public void onButtonPressed(String buttonCode) {
         if (! commands.containsKey(buttonCode))
             return;
         else
-            System.out.printf(
-                    "%s got command %s -> %s\n",
-                    this, buttonCode, commands.get(buttonCode));
+            commands.get(buttonCode).run();
     }
 
     @Override
