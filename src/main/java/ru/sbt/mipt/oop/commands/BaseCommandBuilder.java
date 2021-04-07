@@ -1,11 +1,14 @@
 package ru.sbt.mipt.oop.commands;
 
-public class BaseCommandBuilder implements CommandBuilder {
+class BaseCommandBuilder implements CommandBuilder {
     private CommandBuilder next;
 
     @Override
-    public BaseCommandBuilder setNext(CommandBuilder next) {
-        this.next = next;
+    public CommandBuilder setNext(CommandBuilder next) {
+        if (this.next != null)
+            this.next.setNext(next);
+        else
+            this.next = next;
         return this;
     }
 
