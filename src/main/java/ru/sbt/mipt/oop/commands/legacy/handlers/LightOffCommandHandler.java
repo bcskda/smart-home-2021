@@ -1,11 +1,11 @@
-package ru.sbt.mipt.oop.commands.handlers;
+package ru.sbt.mipt.oop.commands.legacy.handlers;
 
 import ru.sbt.mipt.oop.Action;
 import ru.sbt.mipt.oop.Light;
 import ru.sbt.mipt.oop.SmartHome;
-import ru.sbt.mipt.oop.commands.SensorCommand;
+import ru.sbt.mipt.oop.commands.legacy.SensorCommand;
 
-import static ru.sbt.mipt.oop.commands.CommandType.LIGHT_OFF;
+import static ru.sbt.mipt.oop.commands.legacy.CommandType.LIGHT_OFF;
 
 public class LightOffCommandHandler implements SensorCommandHandler {
     SmartHome smartHome;

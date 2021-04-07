@@ -3,10 +3,10 @@ package ru.sbt.mipt.oop;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import ru.sbt.mipt.oop.commands.CommandType;
-import ru.sbt.mipt.oop.commands.SensorCommand;
-import ru.sbt.mipt.oop.commands.handlers.LightOffCommandHandler;
-import ru.sbt.mipt.oop.commands.handlers.SensorCommandHandler;
+import ru.sbt.mipt.oop.commands.legacy.CommandType;
+import ru.sbt.mipt.oop.commands.legacy.SensorCommand;
+import ru.sbt.mipt.oop.commands.legacy.handlers.LightOffCommandHandler;
+import ru.sbt.mipt.oop.commands.legacy.handlers.SensorCommandHandler;
 
 public class CommandTests {
     SmartHome smartHome;

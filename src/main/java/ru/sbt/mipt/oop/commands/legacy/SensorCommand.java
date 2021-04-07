@@ -1,4 +1,4 @@
-package ru.sbt.mipt.oop.commands;
+package ru.sbt.mipt.oop.commands.legacy;
 
 public class SensorCommand {
     private final CommandType type;
