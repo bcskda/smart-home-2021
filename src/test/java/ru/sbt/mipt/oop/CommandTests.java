@@ -4,18 +4,21 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import ru.sbt.mipt.oop.alarm.Alarm;
 import ru.sbt.mipt.oop.commands.CommandBuilder;
 import ru.sbt.mipt.oop.commands.CommandBuilderChain;
 
 public class CommandTests {
     private org.springframework.context.ApplicationContext context;
     private SmartHome smartHome;
-    CommandBuilder commandBuilder;
+    private Alarm alarm;
+    private CommandBuilder commandBuilder;
 
     @Before
     public void setUp() throws Exception {
         context = new AnnotationConfigApplicationContext(TestConfiguration.class);
         smartHome = context.getBean(SmartHome.class);
+        alarm = context.getBean(Alarm.class);
         commandBuilder = context.getBean(CommandBuilderChain.class).commandBuilder();
     }
 
@@ -75,5 +78,26 @@ public class CommandTests {
         });
         commandBuilder.build("frontDoorClose").execute();
         smartHome.execute(new DoorCheck("4", false));
+    }
+
+    @Test
+    public void triggerAlarm() {
+        Assert.assertTrue(alarm.isStale());
+        commandBuilder.build("triggerAlarm").execute();
+        Assert.assertTrue(alarm.isFiring());
+    }
+
+    @Test
+    public void activateAlarm() {
+        Assert.assertTrue(alarm.isStale());
+        commandBuilder.build("activateAlarm").execute();
+        Assert.assertTrue(alarm.isArmed());
+    }
+
+    @Test
+    public void activateAlarmDefaultCode() {
+        activateAlarm();
+        alarm.deactivate("");
+        Assert.assertTrue(alarm.isStale());
     }
 }
