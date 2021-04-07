@@ -1,19 +1,20 @@
 package ru.sbt.mipt.oop.remotecontrol;
 
 import rc.RemoteControl;
+import ru.sbt.mipt.oop.commands.Command;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class RemoteControlImpl implements RemoteControl {
     private final String id;
-    public final Map<String, Runnable> commands = new HashMap<>();
+    public final Map<String, Command> commands = new HashMap<>();
 
     public RemoteControlImpl(String id) {
         this.id = id;
     }
 
-    public void addCommand(String buttonCode, Runnable command) {
+    public void addCommand(String buttonCode, Command command) {
         commands.put(buttonCode, command);
     }
 
@@ -22,7 +23,7 @@ public class RemoteControlImpl implements RemoteControl {
         if (! commands.containsKey(buttonCode))
             return;
         else
-            commands.get(buttonCode).run();
+            commands.get(buttonCode).execute();
     }
 
     @Override
