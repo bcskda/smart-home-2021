@@ -8,6 +8,7 @@ import java.util.Collection;
 public class SmartHome implements Actionable {
     final private Collection<Room> rooms;
     final private Alarm alarm;
+    private String defaultAlarmCode = "";
     final private NotificationSender notificationSender;
 
     public SmartHome() {
@@ -26,6 +27,10 @@ public class SmartHome implements Actionable {
 
     public Alarm getAlarm() {
         return alarm;
+    }
+
+    public String getDefaultAlarmCode() {
+        return defaultAlarmCode;
     }
 
     public NotificationSender getNotificationSender() {
