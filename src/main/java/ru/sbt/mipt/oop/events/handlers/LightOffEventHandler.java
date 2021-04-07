@@ -10,7 +10,7 @@ import ru.sbt.mipt.oop.events.SensorEvent;
 import static ru.sbt.mipt.oop.events.EventType.LIGHT_OFF;
 
 @Component
-public class LightOffEventHandler implements EventHandler {
+public class LightOffEventHandler implements SensorEventHandler {
     @Bean
     public LightOffEventHandler lightOffEventHandler() {
         return this;
