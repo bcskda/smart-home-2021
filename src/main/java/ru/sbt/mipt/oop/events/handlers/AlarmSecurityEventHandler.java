@@ -16,11 +16,6 @@ public class AlarmSecurityEventHandler implements EventHandler {
     @Autowired private AlarmWhenFiringHandler onAlarmFiring;
     @Autowired private ForEachSensorEventHandler forEachSensorEventHandler;
 
-    @Bean
-    public AlarmSecurityEventHandler alarmSecurityEventHandler() {
-        return this;
-    }
-
     @Override
     public Action handleEvent(Event event) {
         if (stateUpdater.handleEvent(event) != null) {

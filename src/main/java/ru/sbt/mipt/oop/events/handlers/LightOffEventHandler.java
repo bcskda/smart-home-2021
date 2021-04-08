@@ -11,11 +11,6 @@ import static ru.sbt.mipt.oop.events.EventType.LIGHT_OFF;
 
 @Component
 public class LightOffEventHandler implements SensorEventHandler {
-    @Bean
-    public LightOffEventHandler lightOffEventHandler() {
-        return this;
-    }
-
     @Override
     public Action handleEvent(Event event) {
         if (event.getType() != LIGHT_OFF)

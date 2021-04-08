@@ -11,11 +11,6 @@ import static ru.sbt.mipt.oop.events.EventType.DOOR_OPEN;
 
 @Component
 public class DoorOpenEventHandler implements SensorEventHandler {
-    @Bean
-    public DoorOpenEventHandler doorOpenEventHandler() {
-        return this;
-    }
-
     @Override
     public Action handleEvent(Event event) {
         if (event.getType() != DOOR_OPEN)
