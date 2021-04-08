@@ -14,11 +14,6 @@ public class AlarmWhenFiringHandler implements EventHandler {
     @Autowired private Alarm alarm;
     @Autowired public NotificationSender notificationSender;
 
-    @Bean
-    public AlarmWhenFiringHandler alarmWhenFiringHandler() {
-        return this;
-    }
-
     @Override
     public Action handleEvent(Event event) {
         alarm.trigger();
