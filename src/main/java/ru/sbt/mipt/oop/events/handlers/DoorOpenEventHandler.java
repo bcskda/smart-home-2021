@@ -10,7 +10,7 @@ import ru.sbt.mipt.oop.events.SensorEvent;
 import static ru.sbt.mipt.oop.events.EventType.DOOR_OPEN;
 
 @Component
-public class DoorOpenEventHandler implements SensorEventHandler {
+public class DoorOpenEventHandler implements EventHandler {
     @Bean
     public DoorOpenEventHandler doorOpenEventHandler() {
         return this;

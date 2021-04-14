@@ -10,7 +10,7 @@ import ru.sbt.mipt.oop.events.SensorEvent;
 import static ru.sbt.mipt.oop.events.EventType.DOOR_CLOSED;
 
 @Component
-public class HallDoorClosedThenLightsOffHandler implements SensorEventHandler {
+public class HallDoorClosedThenLightsOffHandler implements EventHandler {
     @Autowired private SmartHome smartHome;
 
     @Bean

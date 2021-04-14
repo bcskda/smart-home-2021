@@ -10,7 +10,7 @@ import ru.sbt.mipt.oop.events.SensorEvent;
 import static ru.sbt.mipt.oop.events.EventType.LIGHT_ON;
 
 @Component
-public class LightOnEventHandler implements SensorEventHandler {
+public class LightOnEventHandler implements EventHandler {
     @Bean
     public LightOnEventHandler lightOnEventHandler() {
         return this;
