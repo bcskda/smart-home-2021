@@ -1,20 +1,22 @@
 package ru.sbt.mipt.oop;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import ru.sbt.mipt.oop.commands.CommandType;
 import ru.sbt.mipt.oop.commands.SensorCommand;
 import ru.sbt.mipt.oop.commands.handlers.LightOffCommandHandler;
 import ru.sbt.mipt.oop.commands.handlers.SensorCommandHandler;
+
+import java.io.InputStream;
 
 public class CommandTests {
     SmartHome smartHome;
 
     @Before
     public void setUp() {
-        org.springframework.context.ApplicationContext context = new AnnotationConfigApplicationContext(TestConfiguration.class);
-        smartHome = context.getBean(SmartHome.class);
+        InputStream stream = getClass().getResourceAsStream("test-smart-home.json");
+        smartHome = new JsonConfigurationReader(stream).readSmartHome();
     }
 
     @Test

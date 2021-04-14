@@ -3,7 +3,6 @@ package ru.sbt.mipt.oop;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import ru.sbt.mipt.oop.events.SensorEvent;
 import ru.sbt.mipt.oop.events.EventType;
 import ru.sbt.mipt.oop.events.handlers.DoorClosedEventHandler;
@@ -11,13 +10,15 @@ import ru.sbt.mipt.oop.events.handlers.DoorOpenEventHandler;
 import ru.sbt.mipt.oop.events.handlers.HallDoorClosedThenLightsOffHandler;
 import ru.sbt.mipt.oop.events.handlers.EventHandler;
 
+import java.io.InputStream;
+
 public class DoorEventTests {
     SmartHome smartHome;
 
     @Before
     public void setUp() {
-        org.springframework.context.ApplicationContext context = new AnnotationConfigApplicationContext(TestConfiguration.class);
-        smartHome = context.getBean(SmartHome.class);
+        InputStream stream = getClass().getResourceAsStream("test-smart-home.json");
+        smartHome = new JsonConfigurationReader(stream).readSmartHome();
     }
 
     @Test
