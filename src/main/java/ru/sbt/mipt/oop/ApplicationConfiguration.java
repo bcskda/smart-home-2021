@@ -1,11 +1,10 @@
 package ru.sbt.mipt.oop;
 
 import com.coolcompany.smarthome.events.SensorEventsManager;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import ru.sbt.mipt.oop.actions.PairActionDecorator;
-import ru.sbt.mipt.oop.actions.RunOnceDecorator;
-import ru.sbt.mipt.oop.actions.ToggleLights;
 import ru.sbt.mipt.oop.ccadapt.EventHandlerAdaptor;
 import ru.sbt.mipt.oop.commands.handlers.LightOffCommandHandler;
 import ru.sbt.mipt.oop.commands.handlers.LogCommandHandler;
@@ -16,13 +15,15 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Configuration
+@ComponentScan
 public class ApplicationConfiguration {
     @Bean
-    SmartHome smartHome() {
+    public SmartHome smartHome() {
         // считываем состояние дома из файла
         String filename = "smart-home-1.json";
         try {
@@ -33,7 +34,7 @@ public class ApplicationConfiguration {
     }
 
     @Bean
-    CommandSender commandSender() {
+    public CommandSender commandSender() {
         SmartHome smartHome = smartHome();
         List<SensorCommandHandler> commandHandlers = Arrays.asList(
                 new LogCommandHandler(),
@@ -43,71 +44,42 @@ public class ApplicationConfiguration {
     }
 
     @Bean
-    SensorEventsManager sensorEventsManager() {
+    public EventHandler logEventHandler() {
+        return new LogEventHandler();
+    }
+
+    @Bean
+    public SensorEventsManager sensorEventsManager(@Qualifier("sensor") Collection<EventHandler> sensorEventHandlers,
+                                            @Qualifier("alarm") EventHandler alarmEventHandler) {
+        SmartHome smartHome = smartHome();
+
+        List<EventHandler> wrappedSensorEventHandlers = alarmWrapSensorEventHandlers(sensorEventHandlers);
+        List<EventHandler> allHandlers = getAllNativeHandlers(alarmEventHandler, wrappedSensorEventHandlers);
+        List<com.coolcompany.smarthome.events.EventHandler> adaptedHandlers = ccAdaptHandlers(allHandlers);
+
         SensorEventsManager eventsManager = new SensorEventsManager();
-        ccAdaptedEventHandlers().forEach(eventsManager::registerEventHandler);
+        adaptedHandlers.forEach(eventsManager::registerEventHandler);
         return eventsManager;
     }
 
-    @Bean
-    List<com.coolcompany.smarthome.events.EventHandler> ccAdaptedEventHandlers() {
-        SmartHome smartHome = smartHome();
-        return eventHandlers().stream().map(handler -> new EventHandlerAdaptor(handler, smartHome))
-                .collect(Collectors.toList());
+
+    private List<EventHandler> alarmWrapSensorEventHandlers(Collection<EventHandler> sensorEventHandlers) {
+        return sensorEventHandlers.stream().map(
+                eventHandler -> new FilterByAlarmHandlerDecorator(smartHome().getAlarm(), eventHandler)
+        ).collect(Collectors.toList());
     }
 
-    @Bean
-    List<EventHandler> eventHandlers() {
-        SmartHome smartHome = smartHome();
-
-        List<EventHandler> wrappedSensorHandlers = usualSensorEventHandlers().stream().map(
-                eventHandler -> new FilterByAlarmHandlerDecorator(smartHome.getAlarm(), eventHandler)
-        ).collect(Collectors.toList());
-
+    private List<EventHandler> getAllNativeHandlers(EventHandler alarmEventHandler,
+                                                    List<EventHandler> wrappedSensorEventHandlers) {
         List<EventHandler> allHandlers = new ArrayList<>();
-        allHandlers.add(new LogEventHandler());
-        allHandlers.add(alarmSecurityEventHandler());
-        allHandlers.addAll(wrappedSensorHandlers);
-
+        allHandlers.add(logEventHandler());
+        allHandlers.add(alarmEventHandler);
+        allHandlers.addAll(wrappedSensorEventHandlers);
         return allHandlers;
     }
 
-    @Bean
-    EventHandler alarmSecurityEventHandler() {
-        AlarmSecurityEventHandler handler = new AlarmSecurityEventHandler(
-                smartHome().getAlarm(),
-                new AlarmStateUpdateHandler(smartHome().getAlarm()));
-        return handler
-                .setOnAlarmArmed(onSensorWhenArmedHandler())
-                .setOnAlarmFiring(alwaysWhenFiringHandler());
-    }
-
-    @Bean
-    EventHandler alwaysWhenFiringHandler() {
-        return new WithNotifyHandlerDecorator(
-                smartHome().getNotificationSender(),
-                new UnconditionalHandler(new PairActionDecorator(
-                        new RunOnceDecorator(() -> smartHome().getAlarm().trigger()),
-                        new ToggleLights()
-                ))
-        );
-    }
-
-    @Bean
-    EventHandler onSensorWhenArmedHandler() {
-        return new FilterOnSensorHandlerDecorator(alwaysWhenFiringHandler());
-    }
-
-    @Bean
-    List<EventHandler> usualSensorEventHandlers() {
-        SmartHome smartHome = smartHome();
-        CommandSender commandSender = commandSender();
-
-        return Arrays.asList(
-                new LightOnEventHandler(smartHome),
-                new LightOffEventHandler(smartHome),
-                new DoorOpenEventHandler(smartHome),
-                new DoorClosedEventHandler(smartHome),
-                new HallDoorClosedThenLightsOffHandler(commandSender, smartHome));
+    private List<com.coolcompany.smarthome.events.EventHandler> ccAdaptHandlers(List<EventHandler> nativeHandlers) {
+        return nativeHandlers.stream().map(handler -> new EventHandlerAdaptor(handler, smartHome()))
+                .collect(Collectors.toList());
     }
 }
