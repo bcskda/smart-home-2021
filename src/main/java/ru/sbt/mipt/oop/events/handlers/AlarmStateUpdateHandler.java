@@ -1,22 +1,15 @@
 package ru.sbt.mipt.oop.events.handlers;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
-import org.springframework.stereotype.Component;
 import ru.sbt.mipt.oop.Action;
 import ru.sbt.mipt.oop.alarm.Alarm;
 import ru.sbt.mipt.oop.events.AlarmEvent;
 import ru.sbt.mipt.oop.events.Event;
 
-@Component
-@Import(Alarm.class)
 public class AlarmStateUpdateHandler implements EventHandler {
-    @Autowired private Alarm alarm;
+    private final Alarm alarm;
 
-    @Bean
-    public AlarmStateUpdateHandler alarmStateUpdateHandler() {
-        return this;
+    public AlarmStateUpdateHandler(Alarm alarm) {
+        this.alarm = alarm;
     }
 
     @Override

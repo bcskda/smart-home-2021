@@ -1,18 +1,16 @@
 package ru.sbt.mipt.oop.events.handlers;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
 import ru.sbt.mipt.oop.*;
 import ru.sbt.mipt.oop.events.Event;
 import ru.sbt.mipt.oop.events.SensorEvent;
 
 import static ru.sbt.mipt.oop.events.EventType.DOOR_CLOSED;
 
-@Component
 public class DoorClosedEventHandler implements EventHandler {
-    @Bean
-    public DoorClosedEventHandler doorClosedEventHandler() {
-        return this;
+    SmartHome smartHome;
+
+    public DoorClosedEventHandler(SmartHome smartHome) {
+        this.smartHome = smartHome;
     }
 
     @Override

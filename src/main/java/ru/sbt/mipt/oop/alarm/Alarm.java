@@ -1,16 +1,7 @@
 package ru.sbt.mipt.oop.alarm;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
-
-@Component
 public class Alarm {
     AlarmState state;
-
-    @Bean
-    public Alarm alarm() {
-        return this;
-    }
 
     public Alarm() {
         this.state = new AlarmStateStale(this);

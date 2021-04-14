@@ -1,19 +1,18 @@
 package ru.sbt.mipt.oop.events.handlers;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
 import ru.sbt.mipt.oop.Action;
 import ru.sbt.mipt.oop.Light;
+import ru.sbt.mipt.oop.SmartHome;
 import ru.sbt.mipt.oop.events.Event;
 import ru.sbt.mipt.oop.events.SensorEvent;
 
 import static ru.sbt.mipt.oop.events.EventType.LIGHT_ON;
 
-@Component
 public class LightOnEventHandler implements EventHandler {
-    @Bean
-    public LightOnEventHandler lightOnEventHandler() {
-        return this;
+    SmartHome smartHome;
+
+    public LightOnEventHandler(SmartHome smartHome) {
+        this.smartHome = smartHome;
     }
 
     @Override

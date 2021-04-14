@@ -3,6 +3,9 @@ package ru.sbt.mipt.oop;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import ru.sbt.mipt.oop.actions.PairActionDecorator;
+import ru.sbt.mipt.oop.actions.RunOnceDecorator;
+import ru.sbt.mipt.oop.actions.ToggleLights;
 import ru.sbt.mipt.oop.events.AlarmEvent;
 import ru.sbt.mipt.oop.events.Event;
 import ru.sbt.mipt.oop.events.SensorEvent;
@@ -14,7 +17,7 @@ import java.io.InputStream;
 public class AlarmTests {
     SmartHome smartHome;
     EventHandler filteredDoorClosedHandler;
-    AlarmSecurityEventHandler alarmEventHandler;
+    EventHandler alarmEventHandler;
 
     @Before
     public void setUp() {
@@ -22,15 +25,23 @@ public class AlarmTests {
         smartHome = new JsonConfigurationReader(stream).readSmartHome();
 
         filteredDoorClosedHandler = new FilterByAlarmHandlerDecorator(
-                smartHome.getAlarm(), new DoorClosedEventHandler()
+                smartHome.getAlarm(), new DoorClosedEventHandler(smartHome)
         );
 
-        AlarmWhenFiringHandler onAlarmFiring = new AlarmWhenFiringHandler();
-        AlarmWhenArmedHandler onAlarmArmed = new AlarmWhenArmedHandler();
+        EventHandler alwaysWhenFiring = new WithNotifyHandlerDecorator(
+                smartHome.getNotificationSender(),
+                new UnconditionalHandler(new PairActionDecorator(
+                        new RunOnceDecorator(() -> smartHome.getAlarm().trigger()),
+                        new ToggleLights()
+                ))
+        );
+        EventHandler onSensorWhenArmed = new FilterOnSensorHandlerDecorator(alwaysWhenFiring);
 
-        AlarmStateUpdateHandler alarmStateUpdateHandler = new AlarmStateUpdateHandler();
-
-        alarmEventHandler = new AlarmSecurityEventHandler();
+        alarmEventHandler = new AlarmSecurityEventHandler(
+                smartHome.getAlarm(),
+                new AlarmStateUpdateHandler(smartHome.getAlarm())
+        ).setOnAlarmArmed(onSensorWhenArmed)
+        .setOnAlarmFiring(alwaysWhenFiring);
     }
 
     @Test

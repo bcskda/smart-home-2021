@@ -2,29 +2,27 @@ package ru.sbt.mipt.oop.ccadapt;
 
 import com.coolcompany.smarthome.events.CCSensorEvent;
 import ru.sbt.mipt.oop.Action;
-import ru.sbt.mipt.oop.SmartHome;
 import ru.sbt.mipt.oop.events.Event;
 import ru.sbt.mipt.oop.events.EventType;
 import ru.sbt.mipt.oop.events.SensorEvent;
 import ru.sbt.mipt.oop.events.handlers.EventHandler;
 
 import java.util.Locale;
+import java.util.function.Consumer;
 
 public class EventHandlerAdaptor implements com.coolcompany.smarthome.events.EventHandler {
     private final EventHandler nativeHandler;
-    private final SmartHome smartHome;
+    private final Consumer<Action> actionConsumer;
 
-    public EventHandlerAdaptor(EventHandler nativeHandler, SmartHome smartHome) {
+    public EventHandlerAdaptor(EventHandler nativeHandler, Consumer<Action> actionConsumer) {
         this.nativeHandler = nativeHandler;
-        this.smartHome = smartHome;
+        this.actionConsumer = actionConsumer;
     }
 
     @Override
     public void handleEvent(CCSensorEvent foreignEvent) {
         Event event = adaptEvent(foreignEvent);
-        Action action = nativeHandler.handleEvent(event);
-        if (action != null)
-            smartHome.execute(action);
+        actionConsumer.accept(nativeHandler.handleEvent(event));
     }
 
     private static Event adaptEvent(CCSensorEvent event) {
