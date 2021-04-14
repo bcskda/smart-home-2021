@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import ru.sbt.mipt.oop.actions.PairActionDecorator;
 import ru.sbt.mipt.oop.actions.RunOnceDecorator;
 import ru.sbt.mipt.oop.actions.ToggleLights;
-import ru.sbt.mipt.oop.ccadapt.EventHandlerAdaptorFactory;
+import ru.sbt.mipt.oop.ccadapt.EventHandlerAdaptor;
 import ru.sbt.mipt.oop.commands.handlers.LightOffCommandHandler;
 import ru.sbt.mipt.oop.commands.handlers.LogCommandHandler;
 import ru.sbt.mipt.oop.commands.handlers.SensorCommandHandler;
@@ -52,11 +52,8 @@ public class ApplicationConfiguration {
     @Bean
     List<com.coolcompany.smarthome.events.EventHandler> ccAdaptedEventHandlers() {
         SmartHome smartHome = smartHome();
-        EventHandlerAdaptorFactory eventHandlerAdaptorFactory = new EventHandlerAdaptorFactory(action -> {
-            if (action != null)
-                smartHome.execute(action);
-        });
-        return eventHandlers().stream().map(eventHandlerAdaptorFactory::adapt).collect(Collectors.toList());
+        return eventHandlers().stream().map(handler -> new EventHandlerAdaptor(handler, smartHome))
+                .collect(Collectors.toList());
     }
 
     @Bean
