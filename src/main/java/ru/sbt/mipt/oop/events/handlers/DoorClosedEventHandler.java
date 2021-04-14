@@ -10,6 +10,11 @@ import static ru.sbt.mipt.oop.events.EventType.DOOR_CLOSED;
 
 @Component
 public class DoorClosedEventHandler implements SensorEventHandler {
+    @Bean
+    public DoorClosedEventHandler doorClosedEventHandler() {
+        return this;
+    }
+
     @Override
     public Action handleEvent(Event event) {
         if (event.getType() != DOOR_CLOSED)

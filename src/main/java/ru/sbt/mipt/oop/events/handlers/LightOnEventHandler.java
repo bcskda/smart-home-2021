@@ -11,6 +11,11 @@ import static ru.sbt.mipt.oop.events.EventType.LIGHT_ON;
 
 @Component
 public class LightOnEventHandler implements SensorEventHandler {
+    @Bean
+    public LightOnEventHandler lightOnEventHandler() {
+        return this;
+    }
+
     @Override
     public Action handleEvent(Event event) {
         if (event.getType() != LIGHT_ON)

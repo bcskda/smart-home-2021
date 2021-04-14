@@ -14,6 +14,11 @@ import ru.sbt.mipt.oop.events.Event;
 public class AlarmStateUpdateHandler implements EventHandler {
     @Autowired private Alarm alarm;
 
+    @Bean
+    public AlarmStateUpdateHandler alarmStateUpdateHandler() {
+        return this;
+    }
+
     @Override
     public Action handleEvent(Event event) {
         if (event instanceof AlarmEvent)

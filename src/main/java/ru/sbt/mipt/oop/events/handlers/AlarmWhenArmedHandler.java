@@ -11,6 +11,11 @@ import ru.sbt.mipt.oop.events.SensorEvent;
 public class AlarmWhenArmedHandler implements EventHandler {
     @Autowired private AlarmWhenFiringHandler alarmWhenFiringHandler;
 
+    @Bean
+    public AlarmWhenArmedHandler alarmWhenArmedHandler() {
+        return this;
+    }
+
     @Override
     public Action handleEvent(Event event) {
         if (event instanceof SensorEvent)
