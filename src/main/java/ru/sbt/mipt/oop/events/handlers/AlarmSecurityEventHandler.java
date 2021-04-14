@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 import ru.sbt.mipt.oop.Action;
 import ru.sbt.mipt.oop.alarm.Alarm;
 import ru.sbt.mipt.oop.events.Event;
-import ru.sbt.mipt.oop.events.SensorEvent;
 
 @Component
 public class AlarmSecurityEventHandler implements EventHandler {
@@ -14,7 +13,6 @@ public class AlarmSecurityEventHandler implements EventHandler {
     @Autowired private AlarmStateUpdateHandler stateUpdater;
     @Autowired private AlarmWhenArmedHandler onAlarmArmed;
     @Autowired private AlarmWhenFiringHandler onAlarmFiring;
-    @Autowired private ForEachSensorEventHandler forEachSensorEventHandler;
 
     @Bean
     public AlarmSecurityEventHandler alarmSecurityEventHandler() {
@@ -27,12 +25,10 @@ public class AlarmSecurityEventHandler implements EventHandler {
             throw new RuntimeException("Unexpected non-null action from state updater");
         }
 
-        if (alarm.isArmed())
+        if (alarm.isArmed() && onAlarmArmed != null)
             return onAlarmArmed.handleEvent(event);
-        else if (alarm.isFiring())
+        else if (alarm.isFiring() && onAlarmFiring != null)
             return onAlarmFiring.handleEvent(event);
-        else if (alarm.isStale() && event instanceof SensorEvent)
-            return forEachSensorEventHandler.handleEvent(event);
         else
             return null;
     }
