@@ -17,7 +17,7 @@ public class NativeEventHandlersConfiguration {
     @Autowired
     private CommandSender commandSender;
 
-    @Qualifier("alarm")
+    @Qualifier("noWrap")
     @Bean
     public EventHandler alarmSecurityEventHandler() {
         AlarmSecurityEventHandler handler = new AlarmSecurityEventHandler(

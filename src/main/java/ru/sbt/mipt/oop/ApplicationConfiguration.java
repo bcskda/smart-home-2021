@@ -43,6 +43,7 @@ public class ApplicationConfiguration {
         return new CommandSenderImpl(smartHome(), commandHandlers);
     }
 
+    @Qualifier("noWrap")
     @Bean
     public EventHandler logEventHandler() {
         return new LogEventHandler();
@@ -50,32 +51,23 @@ public class ApplicationConfiguration {
 
     @Bean
     public SensorEventsManager sensorEventsManager(@Qualifier("sensor") Collection<EventHandler> sensorEventHandlers,
-                                            @Qualifier("alarm") EventHandler alarmEventHandler) {
-        SmartHome smartHome = smartHome();
-
+                                            @Qualifier("noWrap") Collection<EventHandler> noWrapEventHandlers) {
         List<EventHandler> wrappedSensorEventHandlers = alarmWrapSensorEventHandlers(sensorEventHandlers);
-        List<EventHandler> allHandlers = getAllNativeHandlers(alarmEventHandler, wrappedSensorEventHandlers);
-        List<com.coolcompany.smarthome.events.EventHandler> adaptedHandlers = ccAdaptHandlers(allHandlers);
 
+        List<EventHandler> allHandlers = new ArrayList<>();
+        allHandlers.addAll(wrappedSensorEventHandlers);
+        allHandlers.addAll(noWrapEventHandlers);
+
+        List<com.coolcompany.smarthome.events.EventHandler> adaptedHandlers = ccAdaptHandlers(allHandlers);
         SensorEventsManager eventsManager = new SensorEventsManager();
         adaptedHandlers.forEach(eventsManager::registerEventHandler);
         return eventsManager;
     }
 
-
     private List<EventHandler> alarmWrapSensorEventHandlers(Collection<EventHandler> sensorEventHandlers) {
         return sensorEventHandlers.stream().map(
                 eventHandler -> new FilterByAlarmHandlerDecorator(smartHome().getAlarm(), eventHandler)
         ).collect(Collectors.toList());
-    }
-
-    private List<EventHandler> getAllNativeHandlers(EventHandler alarmEventHandler,
-                                                    List<EventHandler> wrappedSensorEventHandlers) {
-        List<EventHandler> allHandlers = new ArrayList<>();
-        allHandlers.add(logEventHandler());
-        allHandlers.add(alarmEventHandler);
-        allHandlers.addAll(wrappedSensorEventHandlers);
-        return allHandlers;
     }
 
     private List<com.coolcompany.smarthome.events.EventHandler> ccAdaptHandlers(List<EventHandler> nativeHandlers) {
