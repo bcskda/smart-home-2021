@@ -9,14 +9,12 @@ import ru.sbt.mipt.oop.ccadapt.EventHandlerAdaptor;
 import ru.sbt.mipt.oop.commands.handlers.LightOffCommandHandler;
 import ru.sbt.mipt.oop.commands.handlers.LogCommandHandler;
 import ru.sbt.mipt.oop.commands.handlers.SensorCommandHandler;
+import ru.sbt.mipt.oop.events.EventType;
 import ru.sbt.mipt.oop.events.handlers.*;
 
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Configuration
@@ -41,6 +39,16 @@ public class ApplicationConfiguration {
                 new LightOffCommandHandler(smartHome)
         );
         return new CommandSenderImpl(smartHome(), commandHandlers);
+    }
+
+    @Bean
+    public Map<String, EventType> ccEventTypeMap() {
+        return Map.of(
+                "LightIsOn", EventType.LIGHT_ON,
+                "LightIsOff", EventType.LIGHT_OFF,
+                "DoorIsOpen", EventType.DOOR_OPEN,
+                "DoorIsClosed", EventType.DOOR_CLOSED
+        );
     }
 
     @Qualifier("noWrap")
@@ -71,7 +79,7 @@ public class ApplicationConfiguration {
     }
 
     private List<com.coolcompany.smarthome.events.EventHandler> ccAdaptHandlers(List<EventHandler> nativeHandlers) {
-        return nativeHandlers.stream().map(handler -> new EventHandlerAdaptor(handler, smartHome()))
+        return nativeHandlers.stream().map(handler -> new EventHandlerAdaptor(handler, smartHome(), ccEventTypeMap()))
                 .collect(Collectors.toList());
     }
 }
