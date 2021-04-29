@@ -20,15 +20,13 @@ public class FrontDoorCloseCommandBuilder extends BaseCommandBuilder {
     }
 
     private Command makeCommand() {
-        return () -> {
-            smartHome.execute(component -> {
-                if (! (component instanceof Room))
-                    return;
-                Room room = (Room) component;
-                if (!"hall".equals(room.getName()))
-                    return;
-                room.forEachDoor(door -> ((Door) door).setOpen(false));
-            });
-        };
+        return () -> smartHome.execute(component -> {
+            if (! (component instanceof Room))
+                return;
+            Room room = (Room) component;
+            if (!"hall".equals(room.getName()))
+                return;
+            room.forEachDoor(door -> ((Door) door).setOpen(false));
+        });
     }
 }

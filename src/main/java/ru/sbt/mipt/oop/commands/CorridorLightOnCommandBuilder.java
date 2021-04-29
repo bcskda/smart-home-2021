@@ -20,15 +20,13 @@ public class CorridorLightOnCommandBuilder extends BaseCommandBuilder {
     }
 
     private Command makeCommand() {
-        return () -> {
-            smartHome.execute(component -> {
-                if (! (component instanceof Room))
-                    return;
-                Room room = (Room) component;
-                if (!"corridor".equals(room.getName()))
-                    return;
-                room.forEachLight(light -> ((Light) light).setOn(true));
-            });
-        };
+        return () -> smartHome.execute(component -> {
+            if (! (component instanceof Room))
+                return;
+            Room room = (Room) component;
+            if (!"corridor".equals(room.getName()))
+                return;
+            room.forEachLight(light -> ((Light) light).setOn(true));
+        });
     }
 }

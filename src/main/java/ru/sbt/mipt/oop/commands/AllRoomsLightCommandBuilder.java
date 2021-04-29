@@ -21,12 +21,10 @@ public class AllRoomsLightCommandBuilder extends BaseCommandBuilder {
     }
 
     private Command makeCommand(boolean isOn) {
-        return () -> {
-            smartHome.execute(component -> {
-                if (! (component instanceof Light))
-                    return;
-                ((Light) component).setOn(isOn);
-            });
-        };
+        return () -> smartHome.execute(component -> {
+            if (! (component instanceof Light))
+                return;
+            ((Light) component).setOn(isOn);
+        });
     }
 }

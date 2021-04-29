@@ -3,20 +3,20 @@ package ru.sbt.mipt.oop;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import ru.sbt.mipt.oop.alarm.Alarm;
 import ru.sbt.mipt.oop.commands.CommandBuilder;
 import ru.sbt.mipt.oop.commands.CommandBuilderChain;
 
 public class CommandTests {
-    private org.springframework.context.ApplicationContext context;
     private SmartHome smartHome;
     private Alarm alarm;
     private CommandBuilder commandBuilder;
 
     @Before
     public void setUp() {
-        context = new AnnotationConfigApplicationContext(ApplicationConfiguration.class);
+        ApplicationContext context = new AnnotationConfigApplicationContext(ApplicationConfiguration.class);
         smartHome = context.getBean(SmartHome.class);
         alarm = smartHome.getAlarm();
         commandBuilder = context.getBean(CommandBuilderChain.class).commandBuilder();
