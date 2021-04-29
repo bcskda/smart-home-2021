@@ -26,6 +26,10 @@ public class RemoteControlImpl implements RemoteControl {
             commands.get(buttonCode).execute();
     }
 
+    public String getId() {
+        return id;
+    }
+
     @Override
     public String toString() {
         return "RemoteControlImpl{" +
