@@ -1,9 +1,11 @@
 package ru.sbt.mipt.oop.commands;
 
-public class CommandBuilderChain {
-    private final BaseCommandBuilder[] commandBuilders;
+import java.util.Collection;
 
-    public CommandBuilderChain(BaseCommandBuilder[] commandBuilders) {
+public class CommandBuilderChain {
+    private final Collection<BaseCommandBuilder> commandBuilders;
+
+    public CommandBuilderChain(Collection<BaseCommandBuilder> commandBuilders) {
         this.commandBuilders = commandBuilders;
     }
 

@@ -1,5 +1,6 @@
 package ru.sbt.mipt.oop;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -7,27 +8,30 @@ import ru.sbt.mipt.oop.commands.*;
 
 @Configuration
 public class CommandBuilderConfiguration {
+    @Autowired
+    private SmartHome smartHome;
+
     @Qualifier("singleCommandBuilder")
     @Bean
-    CommandBuilder alarmCommandBuilder() {
-        return new AlarmCommandBuilder();
+    BaseCommandBuilder alarmCommandBuilder() {
+        return new AlarmCommandBuilder(smartHome, smartHome.getAlarm());
     }
 
     @Qualifier("singleCommandBuilder")
     @Bean
-    CommandBuilder allRoomsLightCommandBuilder() {
-        return new AllRoomsLightCommandBuilder();
+    BaseCommandBuilder allRoomsLightCommandBuilder() {
+        return new AllRoomsLightCommandBuilder(smartHome);
     }
 
     @Qualifier("singleCommandBuilder")
     @Bean
-    CommandBuilder corridorLightOnCommandBuilder() {
-        return new CorridorLightOnCommandBuilder();
+    BaseCommandBuilder corridorLightOnCommandBuilder() {
+        return new CorridorLightOnCommandBuilder(smartHome);
     }
 
     @Qualifier("singleCommandBuilder")
     @Bean
-    CommandBuilder frontDoorCloseCommandBuilder() {
-        return new FrontDoorCloseCommandBuilder();
+    BaseCommandBuilder frontDoorCloseCommandBuilder() {
+        return new FrontDoorCloseCommandBuilder(smartHome);
     }
 }

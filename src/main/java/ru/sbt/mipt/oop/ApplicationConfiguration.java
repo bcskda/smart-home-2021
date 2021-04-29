@@ -6,7 +6,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import ru.sbt.mipt.oop.ccadapt.EventHandlerAdaptor;
-import ru.sbt.mipt.oop.commands.CommandBuilder;
+import ru.sbt.mipt.oop.commands.BaseCommandBuilder;
+import ru.sbt.mipt.oop.commands.CommandBuilderChain;
 import ru.sbt.mipt.oop.commands.legacy.handlers.LightOffCommandHandler;
 import ru.sbt.mipt.oop.commands.legacy.handlers.LogCommandHandler;
 import ru.sbt.mipt.oop.commands.legacy.handlers.SensorCommandHandler;
@@ -43,19 +44,10 @@ public class ApplicationConfiguration {
     }
 
     @Bean
-    public CommandBuilder commandBuilder(
-            @Qualifier("singleCommandBuilder") Collection<CommandBuilder> singleBuilders
+    public CommandBuilderChain commandBuilderChain(
+            @Qualifier("singleCommandBuilder") Collection<BaseCommandBuilder> singleBuilders
     ) {
-        CommandBuilder first = null;
-        CommandBuilder prev = null;
-        for (CommandBuilder builder : singleBuilders) {
-            if (first == null)
-                first = builder;
-            if (prev != null)
-                prev.setNext(builder);
-            prev = builder;
-        }
-        return first;
+        return new CommandBuilderChain(singleBuilders);
     }
 
     @Bean

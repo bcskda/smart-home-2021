@@ -18,7 +18,7 @@ public class CommandTests {
     public void setUp() {
         context = new AnnotationConfigApplicationContext(ApplicationConfiguration.class);
         smartHome = context.getBean(SmartHome.class);
-        alarm = context.getBean(Alarm.class);
+        alarm = smartHome.getAlarm();
         commandBuilder = context.getBean(CommandBuilderChain.class).commandBuilder();
     }
 

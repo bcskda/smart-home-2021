@@ -1,6 +1,6 @@
 package ru.sbt.mipt.oop.commands;
 
-class BaseCommandBuilder implements CommandBuilder {
+public class BaseCommandBuilder implements CommandBuilder {
     private CommandBuilder next;
 
     @Override
