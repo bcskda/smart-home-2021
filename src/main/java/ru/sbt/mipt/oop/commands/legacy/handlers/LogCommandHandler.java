@@ -1,7 +1,7 @@
-package ru.sbt.mipt.oop.commands.handlers;
+package ru.sbt.mipt.oop.commands.legacy.handlers;
 
 import ru.sbt.mipt.oop.Action;
-import ru.sbt.mipt.oop.commands.SensorCommand;
+import ru.sbt.mipt.oop.commands.legacy.SensorCommand;
 
 public class LogCommandHandler implements SensorCommandHandler {
     @Override

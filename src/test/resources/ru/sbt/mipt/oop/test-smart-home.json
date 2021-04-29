@@ -79,6 +79,20 @@
         }
       ],
       "name": "hall"
+    },
+    {
+      "lights": [
+        {
+          "isOn": false,
+          "id": 10
+        },
+        {
+          "isOn": true,
+          "id": 11
+        }
+      ],
+      "doors": [],
+      "name": "corridor"
     }
   ]
 }

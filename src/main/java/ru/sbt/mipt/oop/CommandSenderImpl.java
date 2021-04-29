@@ -1,7 +1,7 @@
 package ru.sbt.mipt.oop;
 
-import ru.sbt.mipt.oop.commands.SensorCommand;
-import ru.sbt.mipt.oop.commands.handlers.SensorCommandHandler;
+import ru.sbt.mipt.oop.commands.legacy.SensorCommand;
+import ru.sbt.mipt.oop.commands.legacy.handlers.SensorCommandHandler;
 
 import java.util.List;
 

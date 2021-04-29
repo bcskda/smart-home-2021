@@ -9,6 +9,7 @@ public class SmartHome implements Actionable {
     final private Collection<Room> rooms;
     final private Alarm alarm;
     final private NotificationSender notificationSender;
+    private String defaultAlarmCode = "";
 
     public SmartHome() {
         this(new ArrayList<>());
@@ -22,6 +23,10 @@ public class SmartHome implements Actionable {
 
     public void addRoom(Room room) {
         rooms.add(room);
+    }
+
+    public String getDefaultAlarmCode() {
+        return defaultAlarmCode;
     }
 
     public Alarm getAlarm() {

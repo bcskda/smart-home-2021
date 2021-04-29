@@ -3,7 +3,7 @@ package ru.sbt.mipt.oop;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import ru.sbt.mipt.oop.commands.handlers.LightOffCommandHandler;
+import ru.sbt.mipt.oop.commands.legacy.handlers.LightOffCommandHandler;
 import ru.sbt.mipt.oop.events.SensorEvent;
 import ru.sbt.mipt.oop.events.EventType;
 import ru.sbt.mipt.oop.events.handlers.DoorClosedEventHandler;
