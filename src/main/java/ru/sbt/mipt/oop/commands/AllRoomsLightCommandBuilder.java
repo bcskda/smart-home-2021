@@ -1,13 +1,14 @@
 package ru.sbt.mipt.oop.commands;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import ru.sbt.mipt.oop.Light;
 import ru.sbt.mipt.oop.SmartHome;
 
-@Component
 public class AllRoomsLightCommandBuilder extends BaseCommandBuilder {
-    @Autowired private SmartHome smartHome;
+    private final SmartHome smartHome;
+
+    public AllRoomsLightCommandBuilder(SmartHome smartHome) {
+        this.smartHome = smartHome;
+    }
 
     @Override
     public Command build(String commandType) {
