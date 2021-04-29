@@ -1,17 +1,19 @@
 package ru.sbt.mipt.oop.events.handlers;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
 import ru.sbt.mipt.oop.*;
 import ru.sbt.mipt.oop.events.Event;
 import ru.sbt.mipt.oop.events.SensorEvent;
 
 import static ru.sbt.mipt.oop.events.EventType.DOOR_CLOSED;
 
-@Component
-public class HallDoorClosedThenLightsOffHandler implements SensorEventHandler {
-    @Autowired private SmartHome smartHome;
+public class HallDoorClosedThenLightsOffHandler implements EventHandler {
+    CommandSender controller;
+    SmartHome smartHome;
+
+    public HallDoorClosedThenLightsOffHandler(CommandSender controller, SmartHome smartHome) {
+        this.controller = controller;
+        this.smartHome = smartHome;
+    }
 
     @Override
     public Action handleEvent(Event event) {
@@ -27,7 +29,9 @@ public class HallDoorClosedThenLightsOffHandler implements SensorEventHandler {
             Room room = (Room) component;
             if (! "hall".equals(room.getName()))
                 return;
-            room.execute(containsThisDoorThen(event, () -> smartHome.execute(onHallDoorClose())));
+            room.execute(containsThisDoorThen(event, () -> {
+                smartHome.execute(onHallDoorClose());
+            }));
         };
     }
 
@@ -44,10 +48,10 @@ public class HallDoorClosedThenLightsOffHandler implements SensorEventHandler {
 
     private Action onHallDoorClose() {
         return component -> {
-            if (! (component instanceof Light))
+            if (! (component instanceof Room))
                 return;
-            Light light = (Light) component;
-            light.setOn(false);
+            Room asRoom = (Room) component;
+            asRoom.forEachLight(light -> ((Light) light).setOn(false));
         };
     }
 }

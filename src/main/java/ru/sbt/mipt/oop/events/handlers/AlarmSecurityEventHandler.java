@@ -1,20 +1,30 @@
 package ru.sbt.mipt.oop.events.handlers;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
 import ru.sbt.mipt.oop.Action;
 import ru.sbt.mipt.oop.alarm.Alarm;
 import ru.sbt.mipt.oop.events.Event;
-import ru.sbt.mipt.oop.events.SensorEvent;
 
-@Component
 public class AlarmSecurityEventHandler implements EventHandler {
-    @Autowired private Alarm alarm;
-    @Autowired private AlarmStateUpdateHandler stateUpdater;
-    @Autowired private AlarmWhenArmedHandler onAlarmArmed;
-    @Autowired private AlarmWhenFiringHandler onAlarmFiring;
-    @Autowired private ForEachSensorEventHandler forEachSensorEventHandler;
+    private final Alarm alarm;
+    private final AlarmStateUpdateHandler stateUpdater;
+
+    private EventHandler onAlarmArmed;
+    private EventHandler onAlarmFiring;
+
+    public AlarmSecurityEventHandler(Alarm alarm, AlarmStateUpdateHandler stateUpdater) {
+        this.alarm = alarm;
+        this.stateUpdater = stateUpdater;
+    }
+
+    public AlarmSecurityEventHandler setOnAlarmArmed(EventHandler onAlarmArmed) {
+        this.onAlarmArmed = onAlarmArmed;
+        return this;
+    }
+
+    public AlarmSecurityEventHandler setOnAlarmFiring(EventHandler onAlarmFiring) {
+        this.onAlarmFiring = onAlarmFiring;
+        return this;
+    }
 
     @Override
     public Action handleEvent(Event event) {
@@ -22,12 +32,10 @@ public class AlarmSecurityEventHandler implements EventHandler {
             throw new RuntimeException("Unexpected non-null action from state updater");
         }
 
-        if (alarm.isArmed())
+        if (alarm.isArmed() && onAlarmArmed != null)
             return onAlarmArmed.handleEvent(event);
-        else if (alarm.isFiring())
+        else if (alarm.isFiring() && onAlarmFiring != null)
             return onAlarmFiring.handleEvent(event);
-        else if (alarm.isStale() && event instanceof SensorEvent)
-            return forEachSensorEventHandler.handleEvent(event);
         else
             return null;
     }

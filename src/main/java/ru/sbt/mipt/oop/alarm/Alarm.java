@@ -1,8 +1,5 @@
 package ru.sbt.mipt.oop.alarm;
 
-import org.springframework.stereotype.Component;
-
-@Component
 public class Alarm {
     AlarmState state;
 

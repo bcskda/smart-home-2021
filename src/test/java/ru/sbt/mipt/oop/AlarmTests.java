@@ -3,22 +3,45 @@ package ru.sbt.mipt.oop;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import ru.sbt.mipt.oop.actions.PairActionDecorator;
+import ru.sbt.mipt.oop.actions.RunOnceDecorator;
+import ru.sbt.mipt.oop.actions.ToggleLights;
 import ru.sbt.mipt.oop.events.AlarmEvent;
 import ru.sbt.mipt.oop.events.Event;
 import ru.sbt.mipt.oop.events.SensorEvent;
 import ru.sbt.mipt.oop.events.EventType;
 import ru.sbt.mipt.oop.events.handlers.*;
 
+import java.io.InputStream;
+
 public class AlarmTests {
     SmartHome smartHome;
-    AlarmSecurityEventHandler alarmEventHandler;
+    EventHandler filteredDoorClosedHandler;
+    EventHandler alarmEventHandler;
 
     @Before
     public void setUp() {
-        org.springframework.context.ApplicationContext context = new AnnotationConfigApplicationContext(TestConfiguration.class);
-        smartHome = context.getBean(SmartHome.class);
-        alarmEventHandler = context.getBean(AlarmSecurityEventHandler.class);
+        InputStream stream = getClass().getResourceAsStream("test-smart-home.json");
+        smartHome = new JsonConfigurationReader(stream).readSmartHome();
+
+        filteredDoorClosedHandler = new FilterByAlarmHandlerDecorator(
+                smartHome.getAlarm(), new DoorClosedEventHandler(smartHome)
+        );
+
+        EventHandler alwaysWhenFiring = new WithNotifyHandlerDecorator(
+                smartHome.getNotificationSender(),
+                new UnconditionalHandler(new PairActionDecorator(
+                        new RunOnceDecorator(() -> smartHome.getAlarm().trigger()),
+                        new ToggleLights()
+                ))
+        );
+        EventHandler onSensorWhenArmed = new FilterOnSensorHandlerDecorator(alwaysWhenFiring);
+
+        alarmEventHandler = new AlarmSecurityEventHandler(
+                smartHome.getAlarm(),
+                new AlarmStateUpdateHandler(smartHome.getAlarm())
+        ).setOnAlarmArmed(onSensorWhenArmed)
+        .setOnAlarmFiring(alwaysWhenFiring);
     }
 
     @Test
@@ -111,6 +134,9 @@ public class AlarmTests {
         Event doorClosed = new SensorEvent(EventType.DOOR_CLOSED, "3");
 
         action = alarmEventHandler.handleEvent(doorClosed);
+        Assert.assertNull(action);
+
+        action = filteredDoorClosedHandler.handleEvent(doorClosed);
         Assert.assertNotNull(action);
         smartHome.execute(action);
 

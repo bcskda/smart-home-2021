@@ -1,16 +1,20 @@
 package ru.sbt.mipt.oop.events.handlers;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
 import ru.sbt.mipt.oop.Action;
 import ru.sbt.mipt.oop.Door;
+import ru.sbt.mipt.oop.SmartHome;
 import ru.sbt.mipt.oop.events.Event;
 import ru.sbt.mipt.oop.events.SensorEvent;
 
 import static ru.sbt.mipt.oop.events.EventType.DOOR_OPEN;
 
-@Component
-public class DoorOpenEventHandler implements SensorEventHandler {
+public class DoorOpenEventHandler implements EventHandler {
+    SmartHome smartHome;
+
+    public DoorOpenEventHandler(SmartHome smartHome) {
+        this.smartHome = smartHome;
+    }
+
     @Override
     public Action handleEvent(Event event) {
         if (event.getType() != DOOR_OPEN)

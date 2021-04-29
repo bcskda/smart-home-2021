@@ -1,10 +1,14 @@
 package ru.sbt.mipt.oop;
 
+import ru.sbt.mipt.oop.alarm.Alarm;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
 public class SmartHome implements Actionable {
     final private Collection<Room> rooms;
+    final private Alarm alarm;
+    final private NotificationSender notificationSender;
     private String defaultAlarmCode = "";
 
     public SmartHome() {
@@ -13,6 +17,8 @@ public class SmartHome implements Actionable {
 
     public SmartHome(Collection<Room> rooms) {
         this.rooms = rooms;
+        this.alarm = new Alarm();
+        this.notificationSender = new NotificationSender();
     }
 
     public void addRoom(Room room) {
@@ -21,6 +27,14 @@ public class SmartHome implements Actionable {
 
     public String getDefaultAlarmCode() {
         return defaultAlarmCode;
+    }
+
+    public Alarm getAlarm() {
+        return alarm;
+    }
+
+    public NotificationSender getNotificationSender() {
+        return notificationSender;
     }
 
     @Override
