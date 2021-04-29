@@ -5,10 +5,7 @@ public class BaseCommandBuilder implements CommandBuilder {
 
     @Override
     public CommandBuilder setNext(CommandBuilder next) {
-        if (this.next != null)
-            this.next.setNext(next);
-        else
-            this.next = next;
+        this.next = next;
         return this;
     }
 
