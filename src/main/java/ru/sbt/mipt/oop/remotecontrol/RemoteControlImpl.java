@@ -20,9 +20,7 @@ public class RemoteControlImpl implements RemoteControl {
 
     @Override
     public void onButtonPressed(String buttonCode) {
-        if (! commands.containsKey(buttonCode))
-            return;
-        else
+        if (commands.containsKey(buttonCode))
             commands.get(buttonCode).execute();
     }
 
