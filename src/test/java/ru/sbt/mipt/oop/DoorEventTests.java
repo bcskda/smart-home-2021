@@ -5,15 +5,13 @@ import org.junit.Before;
 import org.junit.Test;
 import ru.sbt.mipt.oop.commands.handlers.LightOffCommandHandler;
 import ru.sbt.mipt.oop.events.SensorEvent;
-import ru.sbt.mipt.oop.events.SensorEventType;
+import ru.sbt.mipt.oop.events.EventType;
 import ru.sbt.mipt.oop.events.handlers.DoorClosedEventHandler;
 import ru.sbt.mipt.oop.events.handlers.DoorOpenEventHandler;
 import ru.sbt.mipt.oop.events.handlers.HallDoorClosedThenLightsOffHandler;
-import ru.sbt.mipt.oop.events.handlers.SensorEventHandler;
+import ru.sbt.mipt.oop.events.handlers.EventHandler;
 
 import java.io.InputStream;
-import java.lang.reflect.ParameterizedType;
-import java.util.Arrays;
 import java.util.Collections;
 
 public class DoorEventTests {
@@ -32,9 +30,9 @@ public class DoorEventTests {
     @Test
     public void closeWorks() {
         smartHome.execute(new DoorCheck("3", true));
-        SensorEventHandler handler = new DoorClosedEventHandler(smartHome);
+        EventHandler handler = new DoorClosedEventHandler(smartHome);
         smartHome.execute(handler.handleEvent(
-                new SensorEvent(SensorEventType.DOOR_CLOSED, "3")));
+                new SensorEvent(EventType.DOOR_CLOSED, "3")));
         smartHome.execute(new DoorCheck("3", false));
     }
 
@@ -42,9 +40,9 @@ public class DoorEventTests {
     public void closeIsTargeted() {
         smartHome.execute(new DoorCheck("3", true));
         smartHome.execute(new DoorCheck("1", true));
-        SensorEventHandler handler = new DoorClosedEventHandler(smartHome);
+        EventHandler handler = new DoorClosedEventHandler(smartHome);
         smartHome.execute(handler.handleEvent(
-                new SensorEvent(SensorEventType.DOOR_CLOSED, "3")));
+                new SensorEvent(EventType.DOOR_CLOSED, "3")));
         smartHome.execute(new DoorCheck("3", false));
         smartHome.execute(new DoorCheck("1", true));
     }
@@ -52,10 +50,10 @@ public class DoorEventTests {
     @Test
     public void closeHallDoor() {
         // Close hall door
-        SensorEventHandler handler = new HallDoorClosedThenLightsOffHandler(
+        EventHandler handler = new HallDoorClosedThenLightsOffHandler(
                 controller, smartHome);
         smartHome.execute(handler.handleEvent(
-                new SensorEvent(SensorEventType.DOOR_CLOSED, "4")));
+                new SensorEvent(EventType.DOOR_CLOSED, "4")));
 
         // Check all lights turned off
         smartHome.execute(component -> {
@@ -69,9 +67,9 @@ public class DoorEventTests {
     @Test
     public void openWorks() {
         smartHome.execute(new DoorCheck("2", false));
-        SensorEventHandler handler = new DoorOpenEventHandler(smartHome);
+        EventHandler handler = new DoorOpenEventHandler(smartHome);
         smartHome.execute(handler.handleEvent(
-                new SensorEvent(SensorEventType.DOOR_OPEN, "2")));
+                new SensorEvent(EventType.DOOR_OPEN, "2")));
         smartHome.execute(new DoorCheck("2", true));
     }
 
@@ -79,9 +77,9 @@ public class DoorEventTests {
     public void openIsTargeted() {
         smartHome.execute(new DoorCheck("2", false));
         smartHome.execute(new DoorCheck("4", false));
-        SensorEventHandler handler = new DoorOpenEventHandler(smartHome);
+        EventHandler handler = new DoorOpenEventHandler(smartHome);
         smartHome.execute(handler.handleEvent(
-                new SensorEvent(SensorEventType.DOOR_OPEN, "2")));
+                new SensorEvent(EventType.DOOR_OPEN, "2")));
         smartHome.execute(new DoorCheck("2", true));
         smartHome.execute(new DoorCheck("4", false));
     }

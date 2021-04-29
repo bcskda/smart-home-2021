@@ -2,7 +2,7 @@ package ru.sbt.mipt.oop;
 
 import java.util.Collection;
 
-public class Room implements HomeComponent, Actionable {
+public class Room implements Actionable {
     private final Collection<Light> lights;
     private final Collection<Door> doors;
     private final String name;

@@ -12,7 +12,7 @@ public class DoorCheck implements Action {
     }
 
     @Override
-    public void execute(HomeComponent component) {
+    public void execute(Actionable component) {
         if (! (component instanceof Door))
             return;
         Door door = (Door) component;

@@ -1,11 +1,12 @@
 package ru.sbt.mipt.oop.events.handlers;
 
 import ru.sbt.mipt.oop.*;
+import ru.sbt.mipt.oop.events.Event;
 import ru.sbt.mipt.oop.events.SensorEvent;
 
-import static ru.sbt.mipt.oop.events.SensorEventType.DOOR_CLOSED;
+import static ru.sbt.mipt.oop.events.EventType.DOOR_CLOSED;
 
-public class HallDoorClosedThenLightsOffHandler implements SensorEventHandler {
+public class HallDoorClosedThenLightsOffHandler implements EventHandler {
     CommandSender controller;
     SmartHome smartHome;
 
@@ -15,10 +16,10 @@ public class HallDoorClosedThenLightsOffHandler implements SensorEventHandler {
     }
 
     @Override
-    public Action handleEvent(SensorEvent event) {
+    public Action handleEvent(Event event) {
         if (event.getType() != DOOR_CLOSED)
             return null;
-        return onAnyDoorClosed(event);
+        return onAnyDoorClosed((SensorEvent) event);
     }
 
     private Action onAnyDoorClosed(SensorEvent event) {
