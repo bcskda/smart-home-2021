@@ -6,9 +6,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import ru.sbt.mipt.oop.ccadapt.EventHandlerAdaptor;
-import ru.sbt.mipt.oop.commands.handlers.LightOffCommandHandler;
-import ru.sbt.mipt.oop.commands.handlers.LogCommandHandler;
-import ru.sbt.mipt.oop.commands.handlers.SensorCommandHandler;
+import ru.sbt.mipt.oop.commands.CommandBuilder;
+import ru.sbt.mipt.oop.commands.legacy.handlers.LightOffCommandHandler;
+import ru.sbt.mipt.oop.commands.legacy.handlers.LogCommandHandler;
+import ru.sbt.mipt.oop.commands.legacy.handlers.SensorCommandHandler;
 import ru.sbt.mipt.oop.events.EventType;
 import ru.sbt.mipt.oop.events.handlers.*;
 
@@ -39,6 +40,22 @@ public class ApplicationConfiguration {
                 new LightOffCommandHandler(smartHome)
         );
         return new CommandSenderImpl(smartHome(), commandHandlers);
+    }
+
+    @Bean
+    public CommandBuilder commandBuilder(
+            @Qualifier("singleCommandBuilder") Collection<CommandBuilder> singleBuilders
+    ) {
+        CommandBuilder first = null;
+        CommandBuilder prev = null;
+        for (CommandBuilder builder : singleBuilders) {
+            if (first == null)
+                first = builder;
+            if (prev != null)
+                prev.setNext(builder);
+            prev = builder;
+        }
+        return first;
     }
 
     @Bean

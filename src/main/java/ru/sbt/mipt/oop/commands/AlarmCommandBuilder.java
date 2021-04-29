@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 import ru.sbt.mipt.oop.SmartHome;
 import ru.sbt.mipt.oop.alarm.Alarm;
 
-@Component
 public class AlarmCommandBuilder extends BaseCommandBuilder {
     @Autowired SmartHome smartHome;
     @Autowired Alarm alarm;

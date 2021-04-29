@@ -15,8 +15,8 @@ public class CommandTests {
     private CommandBuilder commandBuilder;
 
     @Before
-    public void setUp() throws Exception {
-        context = new AnnotationConfigApplicationContext(TestConfiguration.class);
+    public void setUp() {
+        context = new AnnotationConfigApplicationContext(ApplicationConfiguration.class);
         smartHome = context.getBean(SmartHome.class);
         alarm = context.getBean(Alarm.class);
         commandBuilder = context.getBean(CommandBuilderChain.class).commandBuilder();

@@ -13,7 +13,7 @@ public class LegacyCommandTests {
 
     @Before
     public void setUp() {
-        org.springframework.context.ApplicationContext context = new AnnotationConfigApplicationContext(TestConfiguration.class);
+        org.springframework.context.ApplicationContext context = new AnnotationConfigApplicationContext(ApplicationConfiguration.class);
         smartHome = context.getBean(SmartHome.class);
     }
 
